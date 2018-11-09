@@ -135,7 +135,14 @@ for (name in refNames){
 #Renaming column names and merging
 colnames(df_ref2) <- c("GameDate", "Referee", "mergeID")
 
+
 #Convert date columns to correct data type
 df_ref$GameDate <- as.Date(df_ref$GameDate)
 
-df_ref <- merge(x = df_ref, y = df_ref2, by = c("mergeID", "GameDate"))
+df_ref <- merge(x = df_ref, y = df_ref2, all.x = TRUE, by = c("mergeID", "GameDate"))
+
+#Cleaning Final Data
+df_ref$mergeID <- NULL
+
+#writing CSV
+write.csv(df_ref, file = "./data/df_ref.csv",row.names=FALSE)
