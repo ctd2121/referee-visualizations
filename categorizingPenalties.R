@@ -84,6 +84,6 @@ df_ref$PenaltyType[df_ref$PenaltyType == "RUNNING INTO THE KICKER" |
 
 df_ref$PenaltyType[df_ref$PenaltyType == "LEVERAGE" | 
                      df_ref$PenaltyType == "LEAPING"
-                   ] = "ILLEGAL ATTEMPT TO BLOCK FIELD GOAL"
+                   ] = "ILLEGAL ACTION TO BLOCK FIELD GOAL"
 
 df_ref$PenaltyType <- as.factor(df_ref$PenaltyType)
