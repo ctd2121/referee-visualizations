@@ -33,14 +33,20 @@ for (year in years){
   df_temp$OffenseTeam[df_temp$OffenseTeam == "LA"] <- "LAR"
   df_temp$OffenseTeam[df_temp$OffenseTeam == "SD"] <- "LAC"
   df_temp$OffenseTeam[df_temp$OffenseTeam == "STL"] <- "LAR"
+  df_temp$OffenseTeam[df_temp$OffenseTeam == "JAC"] <- "JAX"
+  
   
   df_temp$DefenseTeam[df_temp$DefenseTeam == "LA"] <- "LAR"
   df_temp$DefenseTeam[df_temp$DefenseTeam == "SD"] <- "LAC"
   df_temp$DefenseTeam[df_temp$DefenseTeam == "STL"] <- "LAR"
+  df_temp$DefenseTeam[df_temp$DefenseTeam == "JAC"] <- "JAX"
+  
   
   df_temp$PenaltyTeam[df_temp$PenaltyTeam == "LA"] <- "LAR"
   df_temp$PenaltyTeam[df_temp$PenaltyTeam == "SD"] <- "LAC"
   df_temp$PenaltyTeam[df_temp$PenaltyTeam == "STL"] <- "LAR"
+  df_temp$PenaltyTeam[df_temp$PenaltyTeam == "JAC"] <- "JAX"
+  
   
   df_temp$PenaltyTeam <- as.factor(df_temp$PenaltyTeam)
   
