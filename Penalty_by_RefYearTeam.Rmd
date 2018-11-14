@@ -1,0 +1,101 @@
+---
+title: "Hwk4-pil2104.rmd"
+output:
+  pdf_document:
+    df_print: paged
+    latex_engine: xelatex
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cluster)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(stringr)
+
+```
+For context, we are looking for referee bias within American Football (the NFL). The variable that I am interested in looking at is the number of penalties called. I broke this down by three different variables: Referee, Team, and Year. 
+
+
+The main focus of my analysis is to look at the variance in the number of penalties called. The variance will be very important when looking for discrimination between referees, as we will need to look for I decided to look at whether a team has a lot of penalties because of some bias, or if the team just gets a lot of penalties naturally.
+
+
+
+```{r}
+#BY TEAM
+setwd(getwd())
+
+dataFile<-'./data/df_ref.csv'
+
+refData<-read_csv(dataFile)
+#summarize(refData)
+
+penTeam<-refData %>%
+  group_by(PenaltyTeam) %>%
+  summarize(n=n())
+
+ggplot(penTeam, aes(x=reorder(PenaltyTeam,n),y=n))+geom_point()+coord_flip()+ggtitle("Number of Penalties Taken by Team")+xlab('Team Abbr')+ylab('No. of Penalties')+theme_bw()+geom_hline(yintercept = mean(penTeam$n),color='red',alpha=0.4)
+
+
+```
+The main focus of this first analysis is to look at the number of penalties by team. As you can see, there is a massive variance between the highest and the lowerest penalized team. Note that each team has played the same number of games, so we do not need to adjust for that, and that the data has aggregated over all available data points. The red vertical line represents the mean number of penalties. We can see that the variance between team is quite large, and that there are several upper and lower visual outliers. Also, there seems to be an interesting pattern with 3 teams being grouped together (eg. Min, Ten, Ne) where the number is almost the same.
+
+
+```{r}
+#BY YEAR
+penYear<-refData %>%
+  group_by(year(GameDate)) %>%
+  summarize(n=n())
+
+penYear<-penYear[2:5,]
+
+colnames(penYear)<-c("Year","n")
+ggplot(penYear, aes(x=Year,y=n, label=n))+geom_col()+theme_bw()+geom_label()+geom_text(color='orange2')+ylab('Number of Penalties')+ggtitle('Total Number of Penalties by All Teams')
+
+
+```
+Next I wanted to look at variance between years. There is not much to say for this chart except that it did not find much variance over time. This is important to realize, as we cannot attribute the variance in our analysis to time (or very little of it). Although not finding something super interesting, I think that this analysis is important.
+
+```{r}
+#NOW WE LOOK BY REFEREE
+penRef<-refData %>%
+  group_by(Referee) %>%
+  summarize(n=n())
+
+colnames(penRef)<-c("Referee","n")
+
+refDataTemp<-refData
+refDataTemp$UniqueRef<-paste(refDataTemp$GameDate,refDataTemp$Referee)
+
+gameRef<-refDataTemp %>%
+  group_by(UniqueRef) %>%
+  summarize(n=n())
+
+#gameRef
+
+tempVar <-str_split_fixed(gameRef$UniqueRef,' ',2)
+#tempVar[,2]
+
+gameRef$UniqueRef<-tempVar[,2]
+colnames(gameRef)<-c("Referee","NumGames")
+
+gameRef<-gameRef %>%
+  group_by(Referee) %>%
+  summarize(n=n())
+gameRef
+colnames(gameRef)<-c("Referee","NumGames")
+
+penRef<-merge(x=penRef,y=gameRef, by='Referee')
+penRef$PenPerGame <- penRef$n/penRef$NumGames
+
+#ggplot(penRef, aes(x=reorder(Referee,n),y=n))+geom_col()+coord_flip()+ggtitle("Number of Penalties Given by Referee")+xlab('Ref Name')+ylab('No. of Penalties')+theme_bw()
+#ggplot(penRef, aes(x=reorder(Referee,n),y=PenPerGame))+geom_col()+coord_flip()+ggtitle("Number of Penalties Given by Referee Per Game")+xlab('Ref Name')+ylab('No. of Penalties')+theme_bw()
+ggplot(penRef, aes(x=reorder(Referee,PenPerGame),y=PenPerGame))+geom_point()+coord_flip()+ggtitle("Number of Penalties Given by Referee Per Game")+xlab('Ref Name')+ylab('No. of Penalties / Game')+theme_bw()+geom_hline(yintercept=(mean(penRef$PenPerGame)),color='Red',alpha=0.4)
+summary(penRef$PenPerGame)
+
+
+```
+We see from the above chart what may be the most important aspect of my analysis. We see above the variance between different referees in the amount of penalties called. Note that the summary stats have been included below the chart. The variance is not great, however, it is there. If we standardize the variable, there woudl be a few points that are either outliers, or on the tails of the distribution (that is the immediate next step that I would look at in this analysis). Again, the red line is the mean number of penalties called. Note that because referees reffed different number of games, I had to change to look for the variable 'number of penalties per game'. A large part of our project will be vizualizing and analyzing this variance shown above.
