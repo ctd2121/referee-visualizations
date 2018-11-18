@@ -1,0 +1,29 @@
+---
+title: "PenaltyTypeAnalysis"
+author: "ThompsonBliss"
+date: "November 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
+```
+
+## Are Referee Crews Stricter/Less Strict than other crews
+
+
+
+```{r}
+setwd('C:/Users/tjbli/Documents/GitHub/referee-visualizations/data')
+
+
+df_ref <- read.csv( "df_ref.csv")
+
+
+
+
+```

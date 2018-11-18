@@ -1,0 +1,156 @@
+---
+title: "Hmk4-Q3"
+author: "Thompson Bliss"
+date: "November 12, 2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+```
+
+## Categorizing The Penalties from our Data Set
+
+
+```{r}
+
+df_ref <- read.csv( "df_ref.csv")
+
+#Organizing Penalties into Categories
+df_ref$PenaltyType <- as.character(df_ref$PenaltyType)
+
+df_ref$PenaltyType[df_ref$PenaltyType == "CHOP BLOCK" | 
+                   df_ref$PenaltyType == "CLIPPING" |  
+                   df_ref$PenaltyType == "ILLEGAL BLINDSIDE BLOCK" |  
+                   df_ref$PenaltyType == "ILLEGAL BLOCK ABOVE THE WAIST" | 
+                   df_ref$PenaltyType == "ILLEGAL CRACKBACK" | 
+                   df_ref$PenaltyType == "LOW BLOCK" | 
+                   df_ref$PenaltyType == "ILLEGAL PEELBACK" |
+                   df_ref$PenaltyType == "OFFENSIVE HOLDING" |
+                   df_ref$PenaltyType == "ILLEGAL WEDGE" 
+                     ] = "ILLEGAL BLOCK"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "DEFENSIVE 12 ON-FIELD" | 
+                   df_ref$PenaltyType == "DEFENSIVE TOO MANY MEN ON FIELD" |  
+                   df_ref$PenaltyType == "ILLEGAL SUBSTITUTION" |  
+                   df_ref$PenaltyType == "OFFENSIVE 12 ON-FIELD" | 
+                   df_ref$PenaltyType == "OFFENSIVE TOO MANY MEN ON FIELD" 
+                     ] = "TOO MANY MEN ON FIELD"
+
+
+df_ref$PenaltyType[df_ref$PenaltyType == "DEFENSIVE OFFSIDE" | 
+                   df_ref$PenaltyType == "ENCROACHMENT" |  
+                   df_ref$PenaltyType == "OFFSIDE ON FREE KICK" |
+                   df_ref$PenaltyType == "NEUTRAL ZONE INFRACTION"  |
+                   df_ref$PenaltyType == "OFFENSIVE OFFSIDE" |
+                   df_ref$PenaltyType == "FALSE START"
+                     ] = "OFFSIDE"
+
+
+df_ref$PenaltyType[df_ref$PenaltyType == "DEFENSIVE DELAY OF GAME" |
+                   df_ref$PenaltyType == "DELAY OF KICKOFF"
+                     ] = "DELAY OF GAME"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "ILLEGAL MOTION" | 
+                   df_ref$PenaltyType == "ILLEGAL SHIFT"
+                     ] = "ILLEGAL FORMATION"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "KICKOFF OUT OF BOUNDS" |
+                   df_ref$PenaltyType == "SHORT FREE KICK"
+                     ] = "ILLEGAL KICKOFF"
+
+
+df_ref$PenaltyType[df_ref$PenaltyType == "PLAYER OUT OF BOUNDS ON PUNT" |
+                   df_ref$PenaltyType == "ILLEGAL TOUCH PASS" |
+                   df_ref$PenaltyType == "PLAYER OUT OF BOUNDS ON KICK"  |
+                   df_ref$PenaltyType == "ILLEGAL TOUCH KICK"
+                     ] = "ILLEGAL PLAYER OUT OF BOUNDS"
+                     
+
+df_ref$PenaltyType[df_ref$PenaltyType == "FACE MASK (15 YARDS)" | 
+                   df_ref$PenaltyType == "HORSE COLLAR TACKLE"
+                     ] = "ILLEGAL TACKLE"
+
+
+df_ref$PenaltyType[df_ref$PenaltyType == "TAUNTING" | 
+                   df_ref$PenaltyType == "DISQUALIFICATION" |
+                   df_ref$PenaltyType == "UNNECESSARY ROUGHNESS" |
+                   df_ref$PenaltyType == "PERSONAL FOUL"
+                     ] = "UNSPORTSMANLIKE CONDUCT"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "KICK CATCH INTERFERENCE" | 
+                   df_ref$PenaltyType == "INTERFERENCE WITH OPPORTUNITY TO CATCH"
+                     ] = "FAIR CATCH INTERFERENCE"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "ILLEGAL CONTACT" |
+                   df_ref$PenaltyType == "DEFENSIVE PASS INTERFERENCE" |
+                   df_ref$PenaltyType == "DEFENSIVE HOLDING" |
+                   df_ref$PenaltyType == "OFFENSIVE PASS INTERFERENCE"
+                     ] = "PASS INTERFERENCE"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "INELIGIBLE DOWNFIELD KICK" |
+                     df_ref$PenaltyType == "INELIGIBLE DOWNFIELD PASS"
+                     ] = "INELIGIBLE PLAYER DOWNFIELD"
+
+df_ref$PenaltyType[df_ref$PenaltyType == "RUNNING INTO THE KICKER" |
+                   df_ref$PenaltyType == "ROUGHING THE KICKER" |
+                   df_ref$PenaltyType == "ROUGHING THE PASSER"  
+                     ] = "ROUGHING A PROTECTED PLAYER"
+
+
+df_ref$PenaltyType[df_ref$PenaltyType == "LEVERAGE" | 
+                   df_ref$PenaltyType == "LEAPING"
+                     ] = "ILLEGAL ACTION TO BLOCK FIELD GOAL"
+
+df_ref$PenaltyType <- as.factor(df_ref$PenaltyType)
+
+```
+
+## Making Figures
+
+```{r fig.height= 10}
+library(ggplot2)
+
+penTypeTable <- as.data.frame(table(df_ref$PenaltyType))
+
+ggplot(penTypeTable, aes(x = reorder(Var1, -Freq), y = Freq/sum(Freq)))+  geom_col() + ggtitle("Percentage of Each Penalty Type Called",) + xlab("Penalty Type") + ylab("Percentage") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1))
+
+```
+
+Interestingly, the top penalty is "Offside". This is somewhat suprising considering that it is a pre-play penalty and thus should not be problematic if a player has discipline and knows the correct timing. I am not suprised however to see "Illegal Block" and "Pass Interference" as the second and third most common penalties as they are more unavoidable. Are certain penalites more common or less common to be called by certain referee crews? Are some referee crews biasing the data?
+
+```{r}
+library(lubridate)
+library(tidyr)
+library(dplyr)
+
+df_ref$year = year(as.Date(df_ref$GameDate))
+
+penaltiesByYear <- df_ref %>% group_by(year) %>% 
+    summarize('ILLEGAL TACKLE' = sum(PenaltyType == "ILLEGAL TACKLE") / n(), 'ROUGHING A PROTECTED PLAYER' = sum(PenaltyType == "ROUGHING A PROTECTED PLAYER")  / n(), 'UNSPORTSMANLIKE CONDUCT' = sum(PenaltyType == "UNSPORTSMANLIKE CONDUCT")  / n()) %>% gather(key = PenaltyType, value = measurement, -year)
+
+penaltiesByYear[penaltiesByYear$PenaltyType == "ILLEGAL TACKLE",]$measurement <- penaltiesByYear[penaltiesByYear$PenaltyType == "ILLEGAL TACKLE",]$measurement * 100/penaltiesByYear[penaltiesByYear$PenaltyType == "ILLEGAL TACKLE",]$measurement[1]
+
+penaltiesByYear[penaltiesByYear$PenaltyType == "ROUGHING A PROTECTED PLAYER",]$measurement <- penaltiesByYear[penaltiesByYear$PenaltyType == "ROUGHING A PROTECTED PLAYER",]$measurement * 100/penaltiesByYear[penaltiesByYear$PenaltyType == "ROUGHING A PROTECTED PLAYER",]$measurement[1]
+
+penaltiesByYear[penaltiesByYear$PenaltyType == "UNSPORTSMANLIKE CONDUCT",]$measurement <- penaltiesByYear[penaltiesByYear$PenaltyType == "UNSPORTSMANLIKE CONDUCT",]$measurement * 100/penaltiesByYear[penaltiesByYear$PenaltyType == "UNSPORTSMANLIKE CONDUCT",]$measurement[1]
+
+ggplot(penaltiesByYear, aes(year, measurement, color = PenaltyType)) + geom_line() + xlab("Date") + ylab("Scaled Percentage of Total Penalties") + theme(plot.title = element_text(hjust = 0.5)) + ggtitle("Evolution of the Calling of Player-Protection Penalties",)
+
+
+```
+
+The purpose of the graph was to see if the recent initiative by the NFL to protect its players can be seen in an increase in calling of player-protection penalties. The increase in "Roughing a Protected Player" penalites and decrease in "Unsportsmanlike Conduct" penalties suggests that the NFL is doing more to protect quarterbacks, kickers and punters during play, but less to protect general players from violent acts outside of play. Are penalties increasing in general? Are there less injuries to protected players because of the more frequently called "Roughing a Protected Player" penalties?
+
+```{r fig.height = 10, fig.width = 12}
+
+ggplot(df_ref, aes(y = YardLine, x = PenaltyType))+ geom_boxplot() + ggtitle("Box Plots of what Yardline Each Penalty is Called.") + theme(panel.background = element_rect(fill='green')) + coord_flip()
+
+```
+
+Please note the yardline stat is measured from the perspective of the offensive team. The median yardlne of almost every penalty is located under 50. Perhaps once the offense and defense has been on the field for a while and the offense has made it past the opposing 50, both teams are in more of a rhythm and are both less likely to commit a penalty. Also, maybe referees are trying to be less involved once the offense reaches the scoring region as they do not want to be seen as a decider of the game. Do certain referees bias this data by calling a multitude of penalties at certain yardlines?
+
+Overall, we should perhaps focus on the more common penalties. There are some penalties, such as "Illegally Kicking Ball", that by the Boxplot and Barchart appear to have occured once over the 4.5 year span. Perhaps we should also develop an "Other" category.
