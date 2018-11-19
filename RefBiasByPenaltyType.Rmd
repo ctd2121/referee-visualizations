@@ -18,7 +18,10 @@ knitr::opts_chunk$set(message = FALSE,
 
 
 ```{r}
+
+#Putting Together Data
 library(dplyr)
+library(ggplot2)
 
 df_ref <- read.csv('./data/df_ref.csv')
 
@@ -26,6 +29,8 @@ totalNumberOfGames = nlevels(as.factor(paste(df_ref$GameDate, df_ref$Home)))
 
 totalNumberOfGamesByRef <- unique(df_ref[c("Referee", "GameDate")]) %>% group_by(Referee) %>% summarize(numReffed = n())
 
+
+#Adding the total game numbers to the df_ref
 df_ref = merge(df_ref, totalNumberOfGamesByRef, by = "Referee")
 
 averagePenaltyTypeCalled = table(df_ref$PenaltyType) / totalNumberOfGames
@@ -36,6 +41,7 @@ PenTypeCounts <- df_ref %>% group_by(Referee, PenaltyType) %>%
 PenTypeCounts <- PenTypeCounts[!is.na(PenTypeCounts$Referee),]
 PenTypeCounts <- PenTypeCounts[PenTypeCounts$PenaltyType != "OTHER",]
 
+#Dividing each penalty type by its average to get percentages
 for (penType in levels(df_ref$PenaltyType)){
   PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq = 
     PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq / as.double(averagePenaltyTypeCalled[penType])
@@ -43,7 +49,13 @@ for (penType in levels(df_ref$PenaltyType)){
 
 PenTypeCounts$FreqType = PenTypeCounts$Freq < 1
 
-#ggplot(PenTypeCounts, aes(x=penType, y=mpg_z_score, label=mpg_z_score)) +
+plus1_formatter <- function(x) {x +1}
 
 
+
+ggplot(PenTypeCounts, aes(x=PenaltyType, y=Freq, fill=FreqType))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("sampling point")+ylab("number of species")+
+  scale_fill_manual(name="Plant type",values = c("#FFA373","#50486D"))+
+  coord_flip() + scale_y_continuous(labels=plus1_formatter) + facet_wrap(~Referee)
 ```
