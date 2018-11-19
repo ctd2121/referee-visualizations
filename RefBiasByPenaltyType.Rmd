@@ -13,17 +13,37 @@ knitr::opts_chunk$set(message = FALSE,
 
 ```
 
-## Are Referee Crews Stricter/Less Strict than other crews
+## Are Referee Crews Stricter/Less Strict For Certain Penalty Types?
 
 
 
 ```{r}
-setwd('C:/Users/tjbli/Documents/GitHub/referee-visualizations/data')
+library(dplyr)
 
+df_ref <- read.csv('./data/df_ref.csv')
 
-df_ref <- read.csv( "df_ref.csv")
+totalNumberOfGames = nlevels(as.factor(paste(df_ref$GameDate, df_ref$Home)))
 
+totalNumberOfGamesByRef <- unique(df_ref[c("Referee", "GameDate")]) %>% group_by(Referee) %>% summarize(numReffed = n())
 
+df_ref = merge(df_ref, totalNumberOfGamesByRef, by = "Referee")
+
+averagePenaltyTypeCalled = table(df_ref$PenaltyType) / totalNumberOfGames
+
+PenTypeCounts <- df_ref %>% group_by(Referee, PenaltyType) %>% 
+    summarize(Freq = n() / numReffed[1])
+
+PenTypeCounts <- PenTypeCounts[!is.na(PenTypeCounts$Referee),]
+PenTypeCounts <- PenTypeCounts[PenTypeCounts$PenaltyType != "OTHER",]
+
+for (penType in levels(df_ref$PenaltyType)){
+  PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq = 
+    PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq / as.double(averagePenaltyTypeCalled[penType])
+}
+
+PenTypeCounts$FreqType = PenTypeCounts$Freq < 1
+
+#ggplot(PenTypeCounts, aes(x=penType, y=mpg_z_score, label=mpg_z_score)) +
 
 
 ```

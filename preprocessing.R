@@ -237,6 +237,7 @@ for (name in refNames){
   #Removing unnecessary rows
   df_temp <- df_temp[df_temp$Date > as.Date("01/01/2013"),]
   
+  
   #Adding data to df_ref2
   df_ref2 <- rbind(df_ref2, df_temp)
 }
