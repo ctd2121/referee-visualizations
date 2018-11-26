@@ -3,7 +3,13 @@ title: "RefBiasByYardline"
 output: html_document
 ---
 
+```{r, include=FALSE}
+library(ggplot2)
+```
+
+```{r}
 df <- read.csv("./data/df_ref.csv")
+```
 
 ## Are there particular spots on the playing field where penalties are most frequently called?
 
@@ -28,6 +34,9 @@ ggplot(df, aes(x=YardLine)) +
   ggtitle("Penalties by Yard Line") +
   xlab("Yard Line") +
   ylab("Density")
+
+## Should we not compare this to the distribution of all plays to determine if penalty frequency simply matches the frequency of play at a certain yardage?
+
 ```
 
 The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they occur closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)?
@@ -63,7 +72,7 @@ On average, Bill Vinovich calls penalties at higher yard lines than any other re
 bill_df <- df %>%
   filter(Referee == 'Bill Vinovich')
 
-bill_penalty_types <- gene_df %>%
+bill_penalty_types <- bill_df %>%
   group_by(PenaltyType) %>%
   summarise(count = length(PenaltyType))
 
