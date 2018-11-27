@@ -21,7 +21,7 @@ We downloaded play-by-play data from NFLsavant.com: <http://www.nflsavant.com/ab
 
 We then downloaded referee game data from Pro-Football-Reference: <https://www.pro-football-reference.com/officials/index.htm?fbclid=IwAR387n92do_jrcbwKAjKNR2Y_GSGpcnWMGbCbJ7Pwmx7AdpZQRSbmglfSfU>
 
-As noted above, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we focused only on referees. We also excluded any referees who have not been employed by the NFL for a sufficient amount of time (and thus do not yield sufficient data points); all referees in our dataset have reffed over 700 games.
+As noted above, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we focused only on referees. We also excluded any referees who have not been employed by the NFL for a sufficient amount of time (and thus do not yield sufficient data points); all referees in our dataset have reffed over 50 games over the span of the 2013 NFL Season through week 9 of the 2018 NFL Season.
 
 A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis.
 
