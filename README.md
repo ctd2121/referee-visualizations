@@ -26,3 +26,14 @@ As noted above, because there are hundreds of referees, linesmen, side judges, a
 A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis.
 
 Also included in the "/data" subfolder is a file called "abbreviations.csv". This file is an aid in joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
+
+Data Processing
+---------------
+
+To simplify the data, we grouped certain penalty types together.  Here is a table highlighting how each penalty was grouped together
+
+| Grouping Term    |  Penalty Types Included          |  Cool |
+|----------|:-------------:|------:|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
