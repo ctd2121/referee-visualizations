@@ -34,17 +34,17 @@ To simplify the data, we grouped certain penalty types together.  Here is a tabl
 
 | Grouping Term    |  Penalty Types Included |
 |------------------|-----------------------|
-| <u> Delay of Game </u> | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
-| <u> Illegal Block </u>| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
-|<u> Illegal Formation </u>| Illegal Formation, Illegal Motion, Illegal Shift |
-|<u> Illegal Tackle </u>| Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
-|<u> Illegal Use of Hands </u>| Illegal Use of Hands
-|<u> Offside </u>| Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offside, Offensive Offside |
-|<u> Pass Interference </u>| Defensive Holding, Defensive Pass Interference, Illegal Contact, Offensive Pass Interference |
-|<u> Roughing a Protected Player </u>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
-|<u> Too Many Men on the Field </u>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
-|<u> Unsportsmanlike Conduct </u>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
-| Other | <ul><li><u>Ineligible Player Downfield:</u> Ineligible Downfield Kick, Ineligible Downfield Pass</li><li><u>Fair Catch Interference:</u> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch</li><li><u>Illegal Action to Block a Field Goal:</u> Leverage, Leaping</li><li><u>Illegal Kickoff:</u> Kickoff Out of Bounds, Short Free Kick</li><li><u>Illegal Player Out of Bounds:</u> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt</li></ul>
+| <strong> Delay of Game </strong> | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
+| <strong> Illegal Block </strong>| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
+|<strong> Illegal Formation </strong>| Illegal Formation, Illegal Motion, Illegal Shift |
+|<strong> Illegal Tackle </strong>| Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
+|<strong> Illegal Use of Hands </strong>| Illegal Use of Hands
+|<strong> Offside </strong>| Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offside, Offensive Offside |
+|<strong> Pass Interference </strong>| Defensive Holding, Defensive Pass Interference, Illegal Contact, Offensive Pass Interference |
+|<strong> Roughing a Protected Player </strong>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
+|<strong> Too Many Men on the Field </strong>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
+|<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
+| Other | <ul><li><strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass</li><li><strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch</li><li><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping</li><li><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick</li><li><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt</li></ul>
 
 
 
