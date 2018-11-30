@@ -30,7 +30,7 @@ Also included in the "/data" subfolder is a file called "abbreviations.csv". Thi
 Data Processing
 ---------------
 
-To simplify the data, we grouped certain penalty types together with a universal grouping term. Moreover, some terms accounted for less than 1% of the data after the grouping took place (Fair Catch Interference, Inelgible Player Downfield, Illegal Action to Block a Field Goal, Illegal Kickoff and Illegal Player Out of Bounds) and were grouped again into the "Other" category.  Here is a table highlighting how each penalty type was grouped:
+To simplify the data, penalty types are grouped together with a universal grouping term. Moreover, some terms accounted for less than 1% of the data after the grouping took place (Fair Catch Interference, Inelgible Player Downfield, Illegal Action to Block a Field Goal, Illegal Kickoff and Illegal Player Out of Bounds) and were grouped again into the "Other" category.  Here is a table highlighting how each penalty type was grouped:
 
 | Grouping Term    |  Penalty Types Included |
 |------------------|-----------------------|
