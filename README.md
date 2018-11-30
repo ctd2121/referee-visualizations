@@ -39,7 +39,7 @@ To simplify the data, penalty types are grouped together with a universal groupi
 |<strong> Illegal Formation </strong>| Illegal Formation, Illegal Motion, Illegal Shift |
 |<strong> Illegal Tackle </strong>| Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
 |<strong> Illegal Use of Hands </strong>| Illegal Use of Hands
-|<strong> Offside </strong>| Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offside, Offensive Offside |
+|<strong> Offside </strong>| Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offensive Offside, Offside on Free Kick |
 |<strong> Pass Interference </strong>| Defensive Holding, Defensive Pass Interference, Illegal Contact, Offensive Pass Interference |
 |<strong> Roughing a Protected Player </strong>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
 |<strong> Too Many Men on the Field </strong>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
