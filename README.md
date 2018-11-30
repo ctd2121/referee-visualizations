@@ -48,7 +48,7 @@ To simplify the data, penalty types are grouped together with a universal groupi
 
 Additionally, due to teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to match the current data:
 
-| Team Name |  Old Abbreaviation   |  New Abbreviation |
+| Team Name |  Old Abbreviation   |  New Abbreviation |
 |-----------|----------------------|-------------------|
 | Chargers | SD | LAC | 
 | Jaguars| JAC | JAX |
