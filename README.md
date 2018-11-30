@@ -44,7 +44,13 @@ To simplify the data, we grouped certain penalty types together.  Here is a tabl
 |<strong> Roughing a Protected Player </strong>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
 |<strong> Too Many Men on the Field </strong>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
 |<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
-| Other | <ul><li><strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass</li><li><strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch</li><li><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping</li><li><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick</li><li><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt</li></ul>
+| Other | <ul><li><strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass</li><li><strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch</li><li><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping</li><li><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick</li><li><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt</li></ul> |
 
+The "Other" category consists of penatly type data that after grouping consists of less than 1% of the total data. Additionally, due to teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to match the majority of the data:
 
-
+|  Old Abbreaviation   |  New Abbreviation |
+|------------------|-----------------------|
+| JAC | JAX |
+| LA  | LAR |
+| SD | LAC |
+| STL | LAR |
