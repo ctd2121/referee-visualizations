@@ -44,7 +44,7 @@ To simplify the data, we grouped certain penalty types together.  Here is a tabl
 | Roughing a Protected Player | Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
 | Too Many Men on the Field | Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
 | Unsportsmanlike Conduct | Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
-| Other | <ul><li>Ineligible Downfield Kick, Ineligible Downfield Pass</li><li>Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch</li><li>Leverage, Leaping</li><li>Kickoff Out of Bounds, Short Free Kick</li><li>Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt</li></ul>
+| Other | <ul><li>Ineligible Player Downfield: Ineligible Downfield Kick, Ineligible Downfield Pass</li><li>Fair Catch Interference: Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch</li><li>Illegal Action to Block a Field Goal: Leverage, Leaping</li><li>Illegal Kickoff: Kickoff Out of Bounds, Short Free Kick</li><li>Illegal Player Out of Bounds: Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt</li></ul>
 
 
 
