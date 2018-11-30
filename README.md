@@ -34,6 +34,6 @@ To simplify the data, we grouped certain penalty types together.  Here is a tabl
 
 | Grouping Term    |  Penalty Types Included |
 |------------------|:-----------------------:|
-| Illegal Block| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste |
+| Illegal Block| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
 | col 2 is |    centered   |
 | col 3 is | right-aligned |
