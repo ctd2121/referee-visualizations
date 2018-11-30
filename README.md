@@ -30,10 +30,21 @@ Also included in the "/data" subfolder is a file called "abbreviations.csv". Thi
 Data Processing
 ---------------
 
-To simplify the data, we grouped certain penalty types together.  Here is a table highlighting how each penalty was grouped together
+To simplify the data, we grouped certain penalty types together.  Here is a table highlighting how each penalty was universally grouped with other penalties.
 
 | Grouping Term    |  Penalty Types Included |
 |------------------|:-----------------------:|
+| Delay of Game | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
 | Illegal Block| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
-| col 2 is |    centered   |
-| col 3 is | right-aligned |
+| Illegal Formation | Illegal Formation, Illegal Motion, Illegal Shift |
+| Illegal Tackle | Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
+| Illegal Use of Hands | Illegal Use of Hands }
+| Offside | Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offside, Offensive Offside |
+| Pass Interference | Defensive Holding, Defensive Pass Interference, Illegal Contact, Offensive Pass Interference |
+| Roughing a Protected Player | Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
+| Too Many Men on the Field | Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
+| Unsportsmanlike Conduct | Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
+| Other | Ineligible Downfield Kick, Ineligible Downfield Pass; Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch; Leverage, Leaping; Kickoff Out of Bounds, Short Free Kick; Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt;
+
+
+
