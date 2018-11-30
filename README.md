@@ -33,12 +33,12 @@ Data Processing
 To simplify the data, we grouped certain penalty types together.  Here is a table highlighting how each penalty was universally grouped with other penalties.
 
 | Grouping Term    |  Penalty Types Included |
-|------------------|:-----------------------:|
+|------------------|-----------------------|
 | Delay of Game | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
 | Illegal Block| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
 | Illegal Formation | Illegal Formation, Illegal Motion, Illegal Shift |
 | Illegal Tackle | Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
-| Illegal Use of Hands | Illegal Use of Hands }
+| Illegal Use of Hands | Illegal Use of Hands
 | Offside | Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offside, Offensive Offside |
 | Pass Interference | Defensive Holding, Defensive Pass Interference, Illegal Contact, Offensive Pass Interference |
 | Roughing a Protected Player | Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
