@@ -1,0 +1,84 @@
+---
+title: "HomeAwayAnalysis"
+author: "ThompsonBliss"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
+```
+
+## Do Referee Crews call each penalties against the home and against the away team at the same frequency?
+
+It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing at home. This difference can be a function of player familiarity with the field, away team pre-snap timing due to loudness of crowd, and referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against by penalty type are shown in the figure below:
+
+```{r, fig.cap="Figure 3: Percentage of Penalties called Against Away team by Penalty Type", fig.align= 'center', fig.width = 8}
+
+#Libaries
+library(ggplot2)
+library(scales)
+
+#Reading in data
+df_ref <- read.csv('./data/df_ref.csv')
+
+#Calculating penalties against away team
+df_ref$AgainstAway = df_ref$PenaltyTeam == df_ref$Away
+
+#Removing rows with NA values for against away
+df_ref = df_ref[!is.na(df_ref$AgainstAway),]
+
+#making tables by penalty type
+tableAgainstAway = table(df_ref[df_ref$AgainstAway,]$PenaltyType)
+tableAgainstHome = table(df_ref[!df_ref$AgainstAway,]$PenaltyType)
+
+#getting df of percentage of away vs home
+df_PercentageAgainstAway = as.data.frame(tableAgainstAway / (tableAgainstAway + tableAgainstHome))
+
+#Creating labels for home and away
+df_PercentageAgainstAway$MajorityAgainst = ""
+
+df_PercentageAgainstAway[df_PercentageAgainstAway$Freq > 0.5,]$MajorityAgainst = "Away"
+df_PercentageAgainstAway[df_PercentageAgainstAway$Freq <= 0.5,]$MajorityAgainst = "Home"
+
+#plot
+ggplot(df_PercentageAgainstAway, aes(x = reorder(Var1, - Freq), y = Freq, fill = MajorityAgainst)) + geom_bar(stat = "identity") + xlab("Penalty Type") + ylab("Percentage of Penalties Against the Away Team") + ggtitle("Percentage of Penalties called Against Away team by Penalty Type") + scale_y_continuous(labels = percent, limits=c(0,0.6), breaks = c(0,0.1,0.2,0.3,0.4,0.5,0.6)) + geom_hline(yintercept=0.5) + labs(fill = "Majority of Penalties Against") +coord_flip()
+
+```
+
+It is not at all suprising that a timing penalty such as delay of game is the most unfavorable towards the away team, but the higher degree of Illegal Tackle penalties is decently suprising. Illegal tackle is not based on familiarity with field or pre-snap timing which suggests that it may be a function of biased referee crews. Moreover, the percentage of penalties called against away split by referee is shown in the figure below:
+
+```{r, fig.cap="Figure 4: Percentage of Penalties called Against Away team by Referee", fig.align= 'center', fig.height= 7}
+
+rm(df_PercentageAgainstAway)
+
+#making tables by referee
+tableAgainstAway = table(df_ref[df_ref$AgainstAway,]$Referee)
+tableAgainstHome = table(df_ref[!df_ref$AgainstAway,]$Referee)
+
+#getting df of percentage of away vs home
+df_PercentageAgainstAway = as.data.frame(tableAgainstAway / (tableAgainstAway + tableAgainstHome))
+df_PercentageAgainstAway$Var1 = as.character(df_PercentageAgainstAway$Var1)
+df_PercentageAgainstAway = rbind(df_PercentageAgainstAway, c("Average", sum(df_ref$AgainstAway) / length(df_ref[,1]) ))
+df_PercentageAgainstAway$Var1 = as.factor(df_PercentageAgainstAway$Var1)
+df_PercentageAgainstAway$Freq = as.double(df_PercentageAgainstAway$Freq)
+
+#Creating labels for home and away
+df_PercentageAgainstAway$MajorityAgainst = ""
+
+df_PercentageAgainstAway[df_PercentageAgainstAway$Freq > 0.5,]$MajorityAgainst = "Away"
+df_PercentageAgainstAway[df_PercentageAgainstAway$Freq <= 0.5,]$MajorityAgainst = "Home"
+
+#creating sort double
+df_PercentageAgainstAway$sort = df_PercentageAgainstAway$Freq
+df_PercentageAgainstAway[df_PercentageAgainstAway$Var1 == "Average",]$sort = 0
+
+#plot
+ggplot(df_PercentageAgainstAway, aes(x = reorder(Var1, -sort), y = Freq, fill = MajorityAgainst)) + geom_bar(stat = "identity") + xlab("Penalty Type") + ylab("Percentage of Penalties Against the Away Team") + ggtitle("Percentage of Penalties called Against Away team by Referee") + scale_y_continuous(labels = percent, limits=c(0,0.6), breaks = c(0,0.1,0.2,0.3,0.4,0.5,0.6)) + geom_hline(yintercept=0.5) + labs(fill = "Majority of Penalties Against") +coord_flip()
+
+```
+
+Nearly every single referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below 50% against away. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. Moreover, in the end all of the referee penalty calling split is around 50% and is thus fairly even.
