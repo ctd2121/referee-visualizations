@@ -1,0 +1,52 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+df <- read.csv('./data/df_ref.csv')
+```
+
+We want to analyze penalties called by quarter. First, let us look at a high-level bar chart of number of penalties called per quarter.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+# Ignore penalties called in overtime (denoted by quarter 5)
+df <- df %>%
+  filter(Quarter < 5)
+ggplot(df, aes(x=Quarter)) +
+  geom_bar()
+
+```
+
+As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for home teams versus that for away teams.
+
+Produced below is a Cleveland Dot Plat which shows 
+
+
+```{r}
+df_home <- df %>%
+  filter(PenaltyTeam == Home) %>%
+  mutate(type = 'Home Teams')
+df_away <- df %>%
+  filter(PenaltyTeam == Away) %>%
+  mutate(type = 'Away Teams')
+
+df2 <- rbind(df_home, df_away)
+df2 <- df2[c(2,25,29)]
+
+ggplot(df2, aes(x=Quarter)) +
+  geom_bar(color = "blue", fill = "lightblue") +
+  facet_wrap(~ type) +
+  ggtitle("Penalty Distributions by Quarter") +
+  xlab("Quarter") +
+  ylab("Count") +
+  theme(axis.title.x = element_text(size = 14),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, size = 18))
+```
+
+When we compare the number of away team penalties versus the number of home team penalties by quarter, we observe similar trends as we observed on the aggregate level. However, our exploratory analysis of this distribution leads us down a different path: by simply comparing the two histograms, we can see that more penalties are called on away teams than are called on home teams in all four quarters of a game.
+
+To further explore this, let us for now ignore the distribution of penalties over quarter and simply look at total away team penalties versus total home team penalties.
+
+-- segue to Tom's home vs. away analysis --
