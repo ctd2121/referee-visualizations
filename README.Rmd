@@ -21,7 +21,7 @@ Our interest in sports, and interest in the NFL specifically, prompted us to res
 
 ## Data Collection
 
-Data for this analysis was collected from the past five seasons, beginning with the 2013-2014 NFL season. It should be noted that this analysis was conducted during the 2018-2019 NFL season. Thus we have included all data available for the current season, but this season was excluded in any analyses in which penalties were compared over entire seasons, since all data for the season will not be available until February 2019.
+Data for this analysis was collected from the 2013-2014 NFL season through Week 9 of the 2018-2019 NFL season. It should be noted that this analysis was conducted during the 2018-2019 NFL season. Thus we have included all data available for the current season, but this season was excluded in any analyses in which penalties were compared over entire seasons, since all data for the entire season will not be available until February 2019.
 
 We downloaded play-by-play data from NFLsavant.com:
 http://www.nflsavant.com/about.php?fbclid=IwAR3c8IZngQd0eE_0jp3Z401TdZXSBa8E-qEAX8J7J4uC3--CisVr7ZQfjEQ
@@ -35,6 +35,19 @@ As noted above, because there are hundreds of referees, linesmen, side judges, a
 A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis.
 
 Also included in the "/data" subfolder is a file called "abbreviations.csv". This file is an aid in joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
+
+## Data Quality
+
+As stated above, we have two sources for the data, NFL Savant and Pro-Football-Reference. While Pro-Football-Reference had no missing values and no trends suggesting that any part of the data could be incorrect, the NFL Savant data is somewhat problematic. For example, before removing data points with an undefinied Penalty Team, some of the values in the  "PenaltyType" column are nonsenical:
+
+* "YAC 14.  A FLAG WAS THROWN"
+* "BUT OFFICIALS HUDDLED AND DID NOT CALL A PENALTY."
+* "CENTER-41-J.WINCHESTER"
+
+None of these statements can be considered valid penalty types. After manually checking ESPN play-by-play data in the games that contained these data points, it can be seen that the data was scraped from the ESPN play-by-play data. It seems that irregular text that contain a key word such as "Flag" or "Penalty" as can be seen above, will throw off the scraping algorithm. However, despite these small hiccups, the data is mostly sensical.
+
+Moreover, after the data from Pro-Football-Focus and NFL Savant are merged, there are a decent percentage of missing values in the "Referee", "Home", and "Away" columns. This is due to the fact that some games in the NFL Savant play-by-play data set were reffed by referee crews who have not officiated 50 or more games over the 2013 NFL Season - 2018 NFL Season Week 9. Since NFL Savant data does not include any information on referee, home team, or away team and this data must be merged over from Pro-Football-Focus. Even though these games will be undefined for a few columns, It was deemed ideal to keep the data from them as it can be used to have more a complete analysis of other columns such as "PenaltyType" and "PenaltyYards".
+
 
 ## Data Processing
 
@@ -52,7 +65,7 @@ To simplify the data, penalty types are grouped together with a universal groupi
 |<strong> Roughing a Protected Player </strong>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
 |<strong> Too Many Men on the Field </strong>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
 |<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
-| <strong> Other </strong> | <strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch<br><br> <strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong>Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong>Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
+| <strong> Other </strong> | <strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch<br><br> <strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong>Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
 
 Additionally, due to teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to match the current data:
 
@@ -62,6 +75,7 @@ Additionally, due to teams moving cities as well as general inconsistency of abb
 | Jaguars| JAC | JAX |
 | Rams | LA  | LAR |
 | Rams | STL | LAR |
+
 
 ## Conclusion
 
