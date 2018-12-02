@@ -30,11 +30,38 @@ From this site, we downloaded CSV files from seasons beginning in 2013 through 2
 We then downloaded referee game data from Pro-Football-Reference:
 https://www.pro-football-reference.com/officials/index.htm?fbclid=IwAR387n92do_jrcbwKAjKNR2Y_GSGpcnWMGbCbJ7Pwmx7AdpZQRSbmglfSfU
 
-As noted above, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we focused only on referees. We also excluded any referees who have not been employed by the NFL for a sufficient amount of time (and thus do not yield sufficient data points); all referees in our dataset have reffed over 700 games.
+As noted above, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we focused only on referees. We also excluded any referees who have not been employed by the NFL for a sufficient amount of time (and thus do not yield sufficient data points); all referees in our dataset have reffed over 50 games over the span of the 2013 NFL Season through week 9 of the 2018 NFL Season.
 
 A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis.
 
 Also included in the "/data" subfolder is a file called "abbreviations.csv". This file is an aid in joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
+
+## Data Processing
+
+To simplify the data, penalty types are grouped together with a universal grouping term. Moreover, some terms accounted for less than 1% of the data after the grouping took place (Fair Catch Interference, Inelgible Player Downfield, Illegal Action to Block a Field Goal, Illegal Bat, Illegal Forward Pass, Illegal Kickoff, Illegal Player Out of Bounds, Intentional Grounding, Invalid Fair Catch Signal and Tripping) and were grouped again into the "Other" category.  Here is a table highlighting how each penalty type was grouped:
+
+| Grouping Term    |  Penalty Types Included |
+|------------------|-----------------------|
+| <strong> Delay of Game </strong> | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
+| <strong> Illegal Block </strong>| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
+|<strong> Illegal Formation </strong>| Illegal Formation, Illegal Motion, Illegal Shift |
+|<strong> Illegal Tackle </strong>| Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
+|<strong> Illegal Use of Hands </strong>| Illegal Use of Hands
+|<strong> Offside </strong>| Defensive Offside, Encroachment, False Start, Neutral Zone Infraction, Offensive Offside, Offside on Free Kick |
+|<strong> Pass Interference </strong>| Defensive Holding, Defensive Pass Interference, Illegal Contact, Offensive Pass Interference |
+|<strong> Roughing a Protected Player </strong>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
+|<strong> Too Many Men on the Field </strong>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
+|<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
+| <strong> Other </strong> | <strong>Fair Catch Interference:</strong> <br> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch<br><br> <strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong>Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong>Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
+
+Additionally, due to teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to match the current data:
+
+| Team Name |  Old Abbreviation   |  New Abbreviation |
+|-----------|----------------------|-------------------|
+| Chargers | SD | LAC | 
+| Jaguars| JAC | JAX |
+| Rams | LA  | LAR |
+| Rams | STL | LAR |
 
 ## Conclusion
 
