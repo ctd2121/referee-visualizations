@@ -35,7 +35,7 @@ penRef<-refData %>%
   group_by(Referee,PenaltyTeam) %>%
   summarize(n=n())
 
-penRef
+#penRef
 
 colnames(penRef)<-c("Referee","PenaltyTeam","NPenalties")
 
@@ -64,7 +64,7 @@ temP<-penRef%>%
   group_by(PenaltyTeam)%>%
   dplyr::summarize(Median = median(PenPerGame))
 
-temP
+#temP
 penRef<-merge(x=penRef,y=temP)
 
 penRef<-penRef[complete.cases(penRef),]
@@ -77,7 +77,7 @@ The above is data prep.
 fill <- "#4271AE"
 line <- "#1F3552"
 
-boxPlotTeam<-ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5)+coord_flip()+ggtitle("Number of Penalties Given by Referee Per Game")+xlab('Team')+ylab('Average Number of Penalties given By Referee')+theme_light()
+boxPlotTeam<-ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5)+coord_flip()+ggtitle("Number of Penalties Given by Referee By Team")+xlab('Team')+ylab('Average Number of Penalties given By Referee')+theme_light()
 boxPlotTeam
 
 
@@ -111,31 +111,22 @@ is_outlier <- function(x) {
 
 
 BUFPenRef<-penRef[penRef[,1]=='BUF',]
-BUFPenRef
 
 OAKPenRef<-penRef[penRef[,1]=='OAK',]
-OAKPenRef
 
 NYGPenRef<-penRef[penRef[,1]=='NYG',]
-NYGPenRef
 
 DETPenRef<-penRef[penRef[,1]=='DET',]
-DETPenRef
 
 NEPenRef<-penRef[penRef[,1]=='NE',]
-NEPenRef
 
 KCPenRef<-penRef[penRef[,1]=='KC',]
-KCPenRef
 
 ATLPenRef<-penRef[penRef[,1]=='ATL',]
-ATLPenRef
 
 ARIPenRef<-penRef[penRef[,1]=='ARI',]
-ARIPenRef
 
 SEAPenRef<-penRef[penRef[,1]=='SEA',]
-SEAPenRef
 
 subsetTeams <- rbind(KCPenRef,OAKPenRef)
 subsetTeams <- rbind(subsetTeams,NYGPenRef)
@@ -168,13 +159,25 @@ ggplot(subsetTeams, aes(x = reorder(PenaltyTeam, PenPerGame),y = PenPerGame)) +g
     coord_flip() + theme_light(14)
 
 
-ggplot(subsetTeams, aes(x = PenPerGame,y = reorder(PenaltyTeam, Median))) +geom_density_ridges(fill='blue',alpha= 0.4,scale=2,rel_min_height=0.01) + xlab("Penalty per Game by Referee") + theme_light()+ylab('Team')+ggtitle('Average Penalty by Team')
+ggplot(subsetTeams, aes(x = PenPerGame,y = reorder(PenaltyTeam, Median))) +geom_density_ridges(fill='blue',alpha= 0.4,scale=2,rel_min_height=0.01) + xlab("Penalty per Game by Referee") + theme_light()+ylab('Team')+ggtitle('Average # of Penalties called by Referees')
 
 ggplot(penRef, aes(x = PenPerGame,y = reorder(PenaltyTeam, Median))) +geom_density_ridges(fill = 'blue',alpha = 0.4,scale=2,rel_min_height=0.01) + 
     ggtitle("Penalty per Game") + theme_light()
 
 ggplot(penRef, aes(x = PenPerGame,y = reorder(Referee, Median))) +geom_density_ridges(fill = 'blue',alpha = 0.3,scale=2,rel_min_height=0.01) + 
-    ggtitle("Distribution of Penalty per Game") + theme_light()+ylab('Referee')+xlab('Distribution of Average Number of Penalties per Game by Team')
+    ggtitle("Distribution of Average # Of Penalties by Team") + theme_light()+ylab('Referee')+xlab('Distribution of Average Number of Penalties per Game by Team')
+
+
+
+```
+
+
+
+
+```{r}
+
+
+
 
 
 

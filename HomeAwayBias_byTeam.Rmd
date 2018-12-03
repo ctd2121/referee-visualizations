@@ -1,0 +1,106 @@
+---
+title: "HomeAwayBias_ByTeam"
+author: "Patrick Lewis"
+date: '2018-12-03'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cluster)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(stringr)
+library(plotly)
+#install.packages('ggridges')
+library(ggridges)
+#install.packages("viridis")
+library(viridis)
+setwd(getwd())
+
+dataFile<-'./data/df_ref.csv'
+
+refData<-read_csv(dataFile)
+
+```
+
+
+
+
+
+```{r}
+refData
+refData$AgainstAway = refData$PenaltyTeam == refData$Away
+
+penRefTemp<-refData %>%
+  group_by(Referee,PenaltyTeam,AgainstAway) %>%
+  summarize(n=n())
+
+penRefTemp
+
+
+
+
+
+#Get the # of Games for each Ref that were Away for Each Team
+NoGamesRefAway<- refDataTemp %>%
+  filter(!is.na(PenaltyTeam)) %>% 
+  group_by(Referee,Away,GameDate) %>%
+  summarize(Unique_Elements = n_distinct(GameDate))
+
+NoGamesRefAway <- NoGamesRefAway%>%
+  group_by(Referee,Away) %>%
+  summarize(n=n())
+
+NoGamesRefAway
+
+#Get the # of Games for each Ref that were HOME for Each Team
+NoGamesRefHome<- refDataTemp %>%
+  filter(!is.na(PenaltyTeam)) %>% 
+  group_by(Referee,Home,GameDate) %>%
+  summarize(Unique_Elements = n_distinct(GameDate))
+
+NoGamesRefHome <- NoGamesRefHome%>%
+  group_by(Referee,Home) %>%
+  summarize(n=n())
+
+NoGamesRefHome
+
+colnames(NoGamesRefHome)<-c('Referee','Away','HomeGames')
+
+NoGamesRefHome<-merge(x=NoGamesRefHome,y=NoGamesRefAway)
+colnames(NoGamesRefHome)<-c('Referee','Team','HomeGames','AwayGames')
+NoGamesRefHome$HomeAwayRatio <-NoGamesRefHome$HomeGames / NoGamesRefHome$AwayGames
+
+colnames(penRefTemp)<-c('Referee','Team','AgainstAway','HomePenalties')
+
+penRefTemp[penRefTemp$AgainstAway == FALSE,]
+NoGamesRefHome
+
+HomePens<-penRefTemp[penRefTemp$AgainstAway == FALSE,]
+HomePens<-HomePens[complete.cases(HomePens),]
+
+NoGamesRefHome <- merge(x=NoGamesRefHome,y=HomePens)
+
+NoGamesRefHome = subset(NoGamesRefHome, select = -c(AgainstAway))
+NoGamesRefHome
+
+
+colnames(penRefTemp)<-c('Referee','Team','AgainstAway','AwayPenalties')
+
+AwayPens<-penRefTemp[penRefTemp$AgainstAway == TRUE,]
+AwayPens <-AwayPens[complete.cases(AwayPens),]
+
+NoGamesRefHome
+AwayPens = subset(AwayPens, select = -c(AgainstAway))
+
+
+NoGamesRefHome <- merge(x=NoGamesRefHome,y=AwayPens)
+NoGamesRefHome$ActualRatio <-NoGamesRefHome$HomePenalties / NoGamesRefHome$AwayPenalties
+
+NoGamesRefHome
+
+```
+
