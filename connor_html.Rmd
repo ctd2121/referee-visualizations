@@ -1,0 +1,217 @@
+---
+title: "connor_html"
+author: "Connor Daly - ctd2121"
+date: "12/3/2018"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- read.csv('./data/df_ref.csv')
+```
+
+We want to analyze penalties called by quarter. First, let us look at a high-level bar chart of number of penalties called per quarter.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+# Ignore penalties called in overtime (denoted by quarter 5)
+df <- df %>%
+  filter(Quarter < 5)
+ggplot(df, aes(x=Quarter)) +
+  geom_bar() +
+  ggtitle("Penalties by Quarter") +
+  xlab("Quarter") +
+  ylab("Count") +
+  theme(axis.title.x = element_text(size = 14),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, size = 18))
+```
+
+As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
+
+```{r}
+df_off <- df %>%
+  filter(PenaltyTeam == OffenseTeam) %>%
+  mutate(type = 'Offense Teams')
+df_def <- df %>%
+  filter(PenaltyTeam == DefenseTeam) %>%
+  mutate(type = 'Defense Teams')
+
+df2 <- rbind(df_off, df_def)
+df2 <- df2[c(2,25,29)]
+
+ggplot(df2, aes(x=Quarter)) +
+  geom_bar(color = "blue", fill = "lightblue") +
+  facet_wrap(~ type) +
+  ggtitle("Penalty Distributions by Quarter: Defense vs. Offense") +
+  xlab("Quarter") +
+  ylab("Count") +
+  theme(axis.title.x = element_text(size = 14),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, size = 18))
+```
+
+From the two faceted histograms above we see similar distributions of penalties for defense and offense teams, both of which are extremely similar to the combined distribution as shown above.
+
+Let us instead compare this trend by comparing the distribution of penalties by quarter for home teams versus that for away teams.
+
+Produced below is a Cleveland Dot Plat which shows this.
+
+
+```{r}
+df_home <- df %>%
+  filter(PenaltyTeam == Home) %>%
+  mutate(type = 'Home Teams')
+df_away <- df %>%
+  filter(PenaltyTeam == Away) %>%
+  mutate(type = 'Away Teams')
+
+df3 <- rbind(df_home, df_away)
+df3 <- df3[c(2,25,29)]
+
+ggplot(df3, aes(x=Quarter)) +
+  geom_bar(color = "blue", fill = "lightblue") +
+  facet_wrap(~ type) +
+  ggtitle("Penalty Distributions by Quarter: Away vs. Home") +
+  xlab("Quarter") +
+  ylab("Count") +
+  theme(axis.title.x = element_text(size = 14),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, size = 18))
+```
+
+When we compare the number of away team penalties versus the number of home team penalties by quarter, we observe similar trends as we observed on the aggregate level. However, our exploratory analysis of this distribution leads us down a different path: by simply comparing the two histograms, we can see that more penalties are called on away teams than are called on home teams in all four quarters of a game.
+
+To further explore this, let us for now ignore the distribution of penalties over quarter and simply look at total away team penalties versus total home team penalties.
+
+-- segue to Tom's home vs. away analysis --
+
+## Are there particular spots on the playing field where penalties are most frequently called?
+
+Much attention is placed on the yardlines at which penalties are called in NFL games. There is actually a duality of arguments regarding this proposition; some people believe that penalties are called more frequently than usual when an offensive team is about to score, while others argue that a lot of leniency is given to potential scoring plays, and that many legitimate penalties go uncalled by referees. In the graph below, using a histogram we visualize the distribution of yardlines at which penalties are called. Recall that yard line zero represents a team's own end zone (which they are defending), while yard line 100 represent the defensive team's end zone (which the offensive team is attacking).
+
+```{r}
+#Get mean and standard deviation for YardLine
+m <- mean(df$YardLine)
+std_dev <- sd(df$YardLine)
+
+#Histogram of penalty yard lines
+ggplot(df, aes(x=YardLine)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 5,
+                 color = "blue", fill = "lightblue") +
+  geom_density(color = "black", lwd=1.0) +
+  stat_function(fun = dnorm, args = list(mean = m, sd = std_dev),
+                color = "red", lwd = 1.0) +
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14)) +
+  ggtitle("Penalties by Yard Line") +
+  xlab("Yard Line") +
+  ylab("Density")
+
+## Should we not compare this to the distribution of all plays to determine if penalty frequency simply matches the frequency of play at a certain yardage?
+
+```
+
+The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they occur closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)?
+```{r}
+library(tidyverse)
+df_subset <- df %>%
+  group_by(Referee) %>%
+  summarise(mean_yard_line = mean(YardLine)) %>%
+  filter(!is.na(Referee))
+
+ggplot(df_subset, aes(x=mean_yard_line,
+                      y=fct_reorder(Referee, mean_yard_line))) +
+  geom_point() +
+  ggtitle("Penalty Yard Line Averages by Referee") +
+  scale_y_discrete(name = 'Referee') +
+  scale_x_continuous(name = "Mean Yard Line") +
+  theme(plot.title = element_text(hjust = 0.5, size = 16),
+      axis.title.x = element_text(size = 12),
+      axis.title.y = element_text(size = 12))
+```
+
+This graph shows the distribution of average yard lines at which penalties were called by each referee. The graph shows that the average yard line of penalties for all referees is between 46 and 49. This finding is consistent with the results from the histogram in the previous visualization, where we saw that penalties were more frequently called at yard lines closer to the offensive team's end zone than to the defensive team's end zone.
+
+Although all referees showed the same general pattern in the average area where they called the penalties (that being between yard lines 46 and 49), there are three outliers, relatively speaking. In general, Bill Vinovich and Craig Wrolstad call penalties at greater yard lines than most do, while Gene Steratore calls penalties at lower yard lines than most. This raises a question that perhaps prompts further investigation: do Bill Vinovich and Craig Wrolstad tend to "favor" defensive teams (as penalties at higher yard lines inhibit scoring), and does Gene Steratore tend to favor offensive teams (as penalties at lower yard lines could increase the possibility of scoring)?
+
+Let us begin by exploring Bill Vinovich's penalty calls, since his mean yard line data point is the most significant outlier in the above figure.
+
+## Does Bill Vinovich favor teams on defense?
+
+On average, Bill Vinovich calls penalties at higher yard lines than any other referee in our dataset. To briefly elaborate, this means that if an offensive team is penalized by Vinovich, it is more likely than not that this team is in the attacking half of the playing field. Conversely, this means that if a defensive team is penalized by Vinovich, it is more likely than not that this team is in their own half of the field. Although all referees show this same pattern, Bill Vinovich's distribution is the most extreme. Let us first examine the type of penalties called by Bill Vinovich.
+
+```{r}
+bill_df <- df %>%
+  filter(Referee == 'Bill Vinovich')
+
+bill_penalty_types <- bill_df %>%
+  group_by(PenaltyType) %>%
+  summarise(count = length(PenaltyType))
+
+bill_hist <- ggplot(bill_penalty_types, aes(x = reorder(PenaltyType, - count), y = count)) +
+  geom_bar(stat = "identity") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Penalty Type") +
+  ylab("Average Number called per Game") +
+  ggtitle("Bill Vinovich - Count of Penalty Types Called Per Game")
+
+bill_hist
+```
+
+It is important to compare the above visualization to Figure XX (Tom's visualization - NEED TO UPDATE THIS PIECE), so let us arrange them side-by-side. Below shows two bar charts of penalty types per game: on the left shows the average of all referees, while the right shows the distribution for only Bill Vinovich.
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+#Calculating Average ref data
+df_ref <- df
+totalNumberOfGames = nlevels(as.factor(paste(df_ref$GameDate, df_ref$Home)))
+
+#Calculating number of games each ref worked
+totalNumberOfGamesByRef <- unique(df_ref[c("Referee", "GameDate")]) %>% group_by(Referee) %>% summarize(numReffed = n())
+
+
+#Adding the total game numbers to the df_ref
+df_ref = merge(df_ref, totalNumberOfGamesByRef, by = "Referee")
+
+
+#Getting average penalty types called for all refs
+averagePenaltyTypeCalled = table(df_ref$PenaltyType) / totalNumberOfGames
+df_averagePenaltyTypeCalled = as.data.frame(averagePenaltyTypeCalled)
+colnames(df_averagePenaltyTypeCalled) = c("PenaltyType", "FreqTotal")
+
+
+#Getting Average called by refs
+PenTypeCounts <- df_ref %>% group_by(Referee, PenaltyType) %>% 
+    summarize(Freq = n() / numReffed[1])
+
+#Removing NA/Other Categories
+PenTypeCounts <- PenTypeCounts[!is.na(PenTypeCounts$Referee),]
+PenTypeCounts <- PenTypeCounts[PenTypeCounts$PenaltyType != "OTHER",]
+
+
+#Changing Data sorted by ref to diversion from average of all refs
+for (penType in levels(df_ref$PenaltyType)){
+  PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq = 
+ 1  - PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq/as.double(averagePenaltyTypeCalled[penType])
+  
+}
+
+PenTypeCounts <- merge(PenTypeCounts, df_averagePenaltyTypeCalled, by = "PenaltyType")
+
+hist_previous <- ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y = FreqTotal)) + geom_bar(stat = "identity") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1)) + xlab("Penalty Type") + ylab("Average Number called per Game") + ggtitle("Average Number of Each Penalty Type Called Per Game")
+```
+
+```{r}
+library(gridExtra)
+grid.arrange(hist_previous, bill_hist, ncol = 2)
+```
