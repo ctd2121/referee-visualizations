@@ -37,6 +37,11 @@ penRef<-refData %>%
 
 #penRef
 
+penaltiesPerGame<-refData %>%
+  group_by(GameDate,PenaltyTeam) %>%
+  summarize(n=n())
+
+
 colnames(penRef)<-c("Referee","PenaltyTeam","NPenalties")
 
 
@@ -105,7 +110,7 @@ is_outlier <- function(x) {
 
 
 
-```{r}
+```{r fig.width=10}
 #Buffalo (BUF), Oakland (OAK), Detroit (DET), NYG seem like interesting ones
 #SEA,KC, ATL,ARI,NE
 
@@ -151,7 +156,7 @@ subsetTeams %>%
 To recap what this chart is showing, we essentially took the previous chart and removed the teams that did not have outliers. In this way, we are focusing on the points that we really care about. Note the recurring Referees. We see Terry McAulay’s crew appears to call significantly more penalties against Detroit and Oakland than the other referees. Jerome Boger’s crew also calls significantly more calls against Kansas City and Seattle than other crews. Note the deviation in some of these cases. Perhaps more interestingly, we also see John Hussey’s crew calls much fewer penalties against New England, while calling significantly more penalties against the New York Giants.
 
 
-```{r}
+```{r fig.height=13}
 #Some Ridgeline Plots and Violin plots in case they are useful...but probably dont want to include all of them
 
 ggplot(subsetTeams, aes(x = reorder(PenaltyTeam, PenPerGame),y = PenPerGame)) +geom_violin() + 
@@ -159,13 +164,20 @@ ggplot(subsetTeams, aes(x = reorder(PenaltyTeam, PenPerGame),y = PenPerGame)) +g
     coord_flip() + theme_light(14)
 
 
-ggplot(subsetTeams, aes(x = PenPerGame,y = reorder(PenaltyTeam, Median))) +geom_density_ridges(fill='blue',alpha= 0.4,scale=2,rel_min_height=0.01) + xlab("Penalty per Game by Referee") + theme_light()+ylab('Team')+ggtitle('Average # of Penalties called by Referees')
+#ggplot(subsetTeams, aes(x = PenPerGame,y = reorder(PenaltyTeam, Median))) +geom_density_ridges(fill='blue',alpha= 0.4,scale=2,rel_min_height=0.01) + xlab("Penalty per Game by Referee") + theme_light()+ylab('Team')+ggtitle('Average # of Penalties called by Referees')
 
-ggplot(penRef, aes(x = PenPerGame,y = reorder(PenaltyTeam, Median))) +geom_density_ridges(fill = 'blue',alpha = 0.4,scale=2,rel_min_height=0.01) + 
-    ggtitle("Penalty per Game") + theme_light()
+Temp1<-penaltiesPerGame%>%
+  group_by(PenaltyTeam)%>%
+  dplyr::summarize(Median = median(n))
 
-ggplot(penRef, aes(x = PenPerGame,y = reorder(Referee, Median))) +geom_density_ridges(fill = 'blue',alpha = 0.3,scale=2,rel_min_height=0.01) + 
-    ggtitle("Distribution of Average # Of Penalties by Team") + theme_light()+ylab('Referee')+xlab('Distribution of Average Number of Penalties per Game by Team')
+penaltiesPerGame<-merge(x=penaltiesPerGame,y=Temp1)
+#penaltiesPerGame
+
+ggplot(penaltiesPerGame, aes(x = n,y =reorder(PenaltyTeam,Median))) +geom_density_ridges(fill = 'blue',alpha = 0.4,scale=1.5,rel_min_height=0.01) + 
+    ggtitle("Penalty per Game") + theme_light()+xlim(0,25)
+
+#ggplot(penRef, aes(x = PenPerGame,y = reorder(Referee, Median))) +geom_density_ridges(fill = 'blue',alpha = 0.3,scale=2,rel_min_height=0.01) + 
+#    ggtitle("Distribution of Average # Of Penalties by Team") + theme_light()+ylab('Referee')+xlab('Distribution of Average Number of Penalties per Game by Team')
 
 
 
