@@ -6,7 +6,9 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
 ```
 
 ## Introduction
@@ -54,7 +56,7 @@ Moreover, after the data from Pro-Football-Focus and NFL Savant are merged, ther
 To simplify the data, penalty types are grouped together with a universal grouping term. Moreover, some terms accounted for less than 1% of the data after the grouping took place (Fair Catch Interference, Inelgible Player Downfield, Illegal Action to Block a Field Goal, Illegal Bat, Illegal Forward Pass, Illegal Kickoff, Illegal Player Out of Bounds, Intentional Grounding, Invalid Fair Catch Signal and Tripping) and were grouped again into the "Other" category.  Here is a table highlighting how each penalty type was grouped:
 
 | Grouping Term    |  Penalty Types Included |
-|------------------|-----------------------|
+|------------------|----------------------------------------------------------------------------------------|
 | <strong> Delay of Game </strong> | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
 | <strong> Illegal Block </strong>| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
 |<strong> Illegal Formation </strong>| Illegal Formation, Illegal Motion, Illegal Shift |
@@ -67,6 +69,8 @@ To simplify the data, penalty types are grouped together with a universal groupi
 |<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
 | <strong> Other </strong> | <strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch<br><br> <strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong>Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
 
+<br>
+
 Additionally, due to teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to match the current data:
 
 | Team Name |  Old Abbreviation   |  New Abbreviation |
@@ -76,39 +80,195 @@ Additionally, due to teams moving cities as well as general inconsistency of abb
 | Rams | LA  | LAR |
 | Rams | STL | LAR |
 
+## Analysis by Penalty Type
+
+Week-to-week viewers of NFL football are sometimes confused about why certain types of calls occur more one week versus another. This inconsistentcy certainly could be a function of luck combined with sloppiness by the players, but it also could have to do with biases by referee crews towards calling or not calling certain penalty types. Perhaps some referee crews will throw the flag for any action approaching an illegal tackle while others may be compelled to let questionable tackles slide. After averaging all of the penalty types called for all of the data, the following bar graph can be constructed:
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(gdata)
+library(tidyr)
+
+refData = read.csv('./data/df_ref.csv')
+
+```
+
+```{r fig.height = 6, fig.cap="Figure 1: Average Number of Each Penalty Type Called Per Game", fig.align= 'center'}
+
+#Putting Together Data
+
+
+df_ref <- refData
+
+#Calculating Average ref data
+totalNumberOfGames = nlevels(as.factor(paste(df_ref$GameDate, df_ref$Home)))
+
+#Calculating number of games each ref worked
+totalNumberOfGamesByRef <- unique(df_ref[c("Referee", "GameDate")]) %>% group_by(Referee) %>% summarize(numReffed = n())
+
+
+#Adding the total game numbers to the df_ref
+df_ref = merge(df_ref, totalNumberOfGamesByRef, by = "Referee")
+
+
+#Getting average penalty types called for all refs
+averagePenaltyTypeCalled = table(df_ref$PenaltyType) / totalNumberOfGames
+df_averagePenaltyTypeCalled = as.data.frame(averagePenaltyTypeCalled)
+colnames(df_averagePenaltyTypeCalled) = c("PenaltyType", "FreqTotal")
+
+
+#Getting Average called by refs
+PenTypeCounts <- df_ref %>% group_by(Referee, PenaltyType) %>% 
+    summarize(Freq = n() / numReffed[1])
+
+#Removing NA/Other Categories
+PenTypeCounts <- PenTypeCounts[!is.na(PenTypeCounts$Referee),]
+PenTypeCounts <- PenTypeCounts[PenTypeCounts$PenaltyType != "OTHER",]
+
+
+#Changing Data sorted by ref to diversion from average of all refs
+for (penType in levels(df_ref$PenaltyType)){
+  PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq = 
+ 1  - PenTypeCounts[PenTypeCounts$PenaltyType == penType,]$Freq/as.double(averagePenaltyTypeCalled[penType])
+  
+}
+
+PenTypeCounts <- merge(PenTypeCounts, df_averagePenaltyTypeCalled, by = "PenaltyType")
+
+ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y = FreqTotal)) + geom_bar(stat = "identity") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1)) + xlab("Penalty Type") + ylab("Average Number called per Game") + ggtitle("Average Number of Each Penalty Type Called Per Game")+
+  theme(axis.title.x = element_text(size = 16),
+       axis.title.y = element_text(size = 16),
+       plot.title = element_text(hjust = 0.5, size = 18))
+
+```
+
+Figure 1 shows how the average referee will make penalty calls in a game. Offside and Illegal Block are the most common penalties. This commonality is not suprising as running accross the line of scrimmage and blocking are two fundamental aspects of the game and thus are bound to be done incorrectly sometimes. Moreover, it is also not suprising particularly sloppy penalties such as Too Many Men on the Field, Illegal Formation and Delay of game are rare. Moreover, not every referee crew calls penalties at the exact rate highlighted in Figure 1. Figure 2 below shows the percentage of increase or decrease from these averages.
+
+
+```{r fig.width = 8, fig.height = 16, fig.cap="Figure 2: Percentage of Increase/Decrease from Average Penalty Type", fig.align= 'center'}
+#Setting Color Scheme
+PenTypeCounts$FreqType = PenTypeCounts$Freq < 0
+
+#Plotting Data Faceted by Ref
+ggplot(PenTypeCounts, aes(x=reorder(PenaltyType, FreqTotal), y=Freq, fill=FreqType))+
+  geom_bar(stat="identity",position="identity")+ ggtitle("Percentage of Increase/Decrease from Average Penalty Type Called") + scale_fill_manual(values = c("green","red"), guide = FALSE)+ facet_wrap(~Referee, nrow = 8, ncol = 2, scales = 'free_x') + coord_flip() + geom_hline(yintercept=0) + theme(panel.spacing = unit(1, "lines")) +xlab('') + ylab('Percentage of Divergence from Average')  + scale_y_continuous(labels = percent, limits=c(-0.6,0.6)) +
+  theme(axis.title.x = element_text(size = 16),
+       axis.title.y = element_text(size = 16),
+       plot.title = element_text(hjust = 0.5, size = 18))
+
+keep(refData, sure = TRUE)
+
+
+```
+
+Figure 2 gives insight on tendencies of NFL referee crews towards calling or not calling certain penalties. For example, the crew of Bill Vinovich seems to call more penalties than average regardless of type. Moreover, Walt Anderson's crew seems to call less penalties than average regardless of type. Moreover, perhaps if Jerome Boger and his crew are officiating a game, it may be reasonable to expect an offensive game as he calls less Pass Interference, Illegal Formation and Illegal Block than average and more Roughing a Protected Player and Illegal Tackle than average.
+
+
+## Away / Home Team Analysis
+
+It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing at home. This difference can be a function of player familiarity with the field, away team pre-snap timing due to loudness of crowd, and referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against by penalty type are shown in the figure below:
+
+```{r, fig.cap="Figure 3: Percentage of Penalties called Against Home and Away Teams by Penalty Type", fig.align= 'center', fig.width = 8}
+
+#Reading in data
+df_ref <- refData
+
+#Calculating penalties against away team
+df_ref$AgainstAway = df_ref$PenaltyTeam == df_ref$Away
+
+#Removing rows with NA values for against away
+df_ref = df_ref[!is.na(df_ref$AgainstAway),]
+
+#making tables by penalty type
+tableAgainstAway = table(df_ref[df_ref$AgainstAway,]$PenaltyType)
+tableAgainstHome = table(df_ref[!df_ref$AgainstAway,]$PenaltyType)
+
+#getting df of percentage of away vs home
+df_percentage = as.data.frame(tableAgainstAway / (tableAgainstAway + tableAgainstHome))
+df_percentage$against = "Away"
+df_percentage2 = as.data.frame(tableAgainstHome / (tableAgainstAway + tableAgainstHome))
+df_percentage2$against = "Home"
+df_percentage = rbind(df_percentage, df_percentage2)
+
+df_percentage$plotOrder = df_percentage[df_percentage$against == "Away",]$Freq
+
+#plot
+ggplot(df_percentage, aes(x = reorder(Var1, - plotOrder), y = Freq, color = against)) + geom_hline(yintercept=0.5) + geom_point(stat = "identity", size = 3) + xlab("Penalty Type") + ggtitle("% of Penalties Called Against the Home/Away Teams by Penalty Type") + ylab("Percentage of Penalties called Against") + scale_y_continuous(labels = percent, limits=c(0.4,0.6)) + labs(color = "Perentage Called Against") +coord_flip()+
+  theme(axis.title.x = element_text(size = 16),
+       axis.title.y = element_text(size = 16),
+       plot.title = element_text(hjust = 0.5, size = 18))
+
+```
+
+It is not at all suprising that a timing penalty such as delay of game is the most unfavorable towards the away team, but the higher degree of Illegal Tackle penalties is decently suprising. Illegal tackle is not based on familiarity with field or pre-snap timing which suggests that it may be a function of biased referee crews. Moreover, the percentage of penalties called against away split by referee is shown in the figure below:
+
+```{r, fig.cap="Figure 4: Percentage of Penalties called Against Home and Away Teams by Referee", fig.align= 'center', fig.height= 7, fig.width = 7.75}
+
+rm(df_percentage)
+rm(df_percentage2)
+
+#making tables by referee
+tableAgainstAway = table(df_ref[df_ref$AgainstAway,]$Referee)
+tableAgainstHome = table(df_ref[!df_ref$AgainstAway,]$Referee)
+
+#getting df of percentage of away vs home
+df_percentage = as.data.frame(tableAgainstAway / (tableAgainstAway + tableAgainstHome))
+df_percentage$against = "Away"
+df_percentage2 = as.data.frame(tableAgainstHome / (tableAgainstAway + tableAgainstHome))
+df_percentage2$against = "Home"
+df_percentage = rbind(df_percentage, df_percentage2)
+
+df_percentage$Var1 = as.character(df_percentage$Var1)
+
+
+df_percentage = rbind(df_percentage, c("AVERAGE", sum(df_ref$AgainstAway) / length(df_ref[,1]), "Away" ))
+
+df_percentage = rbind(df_percentage, c("AVERAGE", 1 - sum(df_ref$AgainstAway) / length(df_ref[,1]), "Home"))
+
+df_percentage$Var1 = as.factor(df_percentage$Var1)
+df_percentage$Freq = as.double(df_percentage$Freq)
+df_percentage$against = as.factor(df_percentage$against)
+
+df_percentage = df_percentage[order(df_percentage$against),]
+df_percentage$plotOrder = df_percentage[df_percentage$against == "Away",]$Freq
+
+df_percentage$avg = FALSE
+df_percentage[df_percentage$Var1 == "AVERAGE",]$avg = TRUE
+
+#plot
+ggplot(df_percentage, aes(x = reorder(Var1, -plotOrder), y = Freq, color = against)) + geom_hline(yintercept=0.5)  + geom_point(stat = "identity", size = 3, aes(shape = avg)) + xlab("Penalty Type") + ylab("Percentage of Penalties Against") + ggtitle("% of Penalties called Against Home/Away Teams by Referee") + scale_y_continuous(labels = percent, limits=c(0.4,0.6)) + labs(color = "Percentage Called Against") +coord_flip() + guides(shape = FALSE)+
+  theme(axis.title.x = element_text(size = 16),
+       axis.title.y = element_text(size = 16),
+       plot.title = element_text(hjust = 0.5, size = 18))
+
+keep(refData, sure = TRUE)
+
+```
+
+Nearly every single referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below 50% against away. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. Moreover, in the end all of the referee penalty calling split is around 50% and is thus fairly even.
 
 ## Analysis by Quarter
-```{r}
-df <- read.csv('./data/df_ref.csv')
+```{r fig.cap="Figure 5: Penalties per Game by Quarter", fig.align= 'center'}
+df2 <- refData
 
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-# Ignore penalties called in overtime (denoted by quarter 5)
-df <- df %>%
-  filter(Quarter < 5)
-ggplot(df, aes(x=Quarter)) +
-  geom_bar(color = "blue", fill = "lightgreen") +
-  ggtitle("Penalties by Quarter") +
-  xlab("Quarter") +
-  ylab("Count") +
-  theme(axis.title.x = element_text(size = 14),
-      axis.title.y = element_text(size = 14),
-      plot.title = element_text(hjust = 0.5, size = 18))
-
-df_by_q <- df[c(1,5,6,30,2)]
+df_by_q <- df2[c(1,5,6,2)]
 df_by_q <- df_by_q %>%
-  filter(Quarter < 5) %>%
   mutate(gameID = paste(GameDate, OffenseTeam, DefenseTeam))
-len <- n_distinct(df_by_q$gameID)
-df_by_q <- df_by_q[c(6,5)]
-df_by_q$Quarter <- as.factor(df_by_q$Quarter)
+reg_len <- n_distinct(df_by_q$gameID)
+ot <- df_by_q %>%
+  filter(Quarter == 5)
+ot_len <- n_distinct(ot$gameID)
 df_by_q <- df_by_q %>%
   group_by(Quarter) %>%
   summarise(count = n()) %>%
-  mutate(count = count/len)
+  mutate(adj_count = ifelse(Quarter < 5, count/reg_len, count/ot_len))
+df_by_q$Quarter <- as.factor(df_by_q$Quarter)
+levels(df_by_q$Quarter) <- c("Q1", "Q2", "Q3", "Q4", "Overtime")
 
-ggplot(df_by_q, aes(x = Quarter, y = count, width = 0.8)) +
+
+ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
   geom_bar(stat = "identity", color = "black", fill = "red", alpha = 0.6) +
   ggtitle("Penalties per Game by Quarter") +
   xlab("Quarter") +
@@ -116,6 +276,7 @@ ggplot(df_by_q, aes(x = Quarter, y = count, width = 0.8)) +
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
        plot.title = element_text(hjust = 0.5, size = 18))
+
 ```
 
 As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
