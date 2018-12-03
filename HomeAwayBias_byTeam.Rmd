@@ -100,7 +100,56 @@ AwayPens = subset(AwayPens, select = -c(AgainstAway))
 NoGamesRefHome <- merge(x=NoGamesRefHome,y=AwayPens)
 NoGamesRefHome$ActualRatio <-NoGamesRefHome$HomePenalties / NoGamesRefHome$AwayPenalties
 
+NoGamesRefHome$AvgAway <- NoGamesRefHome$AwayPenalties/NoGamesRefHome$AwayGames
+NoGamesRefHome$AvgHome <- NoGamesRefHome$HomePenalties/NoGamesRefHome$HomeGames
+NoGamesRefHome$Difference <- NoGamesRefHome$AvgAway - NoGamesRefHome$AvgHome
+
 NoGamesRefHome
 
+line <- "#00008B"
+
+
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
+}
+
+Temp<-NoGamesRefHome%>%
+  group_by(Team)%>%
+  dplyr::summarize(Median = median(Difference))
+
+NoGamesRefHome<-merge(x=NoGamesRefHome,y=Temp)
+
+#boxPlotTeam<-ggplot(NoGamesRefHome, aes(x=reorder(Team,Median),y=Difference))+geom_boxplot(fill="firebrick",colour='midnightblue',outlier.colour = "midnightblue", outlier.alpha=1,outlier.shape = 18,alpha=0.6,outlier.size = 3)+coord_flip()+ggtitle("Difference Between Avg # of Penalties called by Referee At Home vs. Away")+xlab('Team')+ylab('Difference between Average # of Penalties Called Home - Avg # Penalties Called Away')+theme_light()+geom_hline(yintercept=0,color='navy',alpha=0.6)
+#boxPlotTeam
+
+
+
+NoGamesRefHome %>%
+  group_by(Team) %>%
+  mutate(outlier = ifelse(is_outlier(Difference), Referee,NA)) %>%
+  ggplot(., aes(x = factor(Team), y = Difference)) +
+   geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18) +
+    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+
+    theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties by Referee, by Team')
+
+Ed<-'Ed Hochuli'
+Brad<-'Brad Allen'
+
+EdData<-NoGamesRefHome[NoGamesRefHome[,2] == Ed,]
+EdData$Outlier<-(EdData$Difference<=-5)
+EdData
+
+BradData<-NoGamesRefHome[NoGamesRefHome[,2]==Brad,]
+BradData$Outlier<-(BradData$Difference<=-6 | BradData$Difference>=6.2)
+BradData
+
+ggplot(EdData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+ggtitle('Ed Hochuli: Difference between Home and Away for Each Team')+ylab('Average # of Penalties Called Home - Average # of Penalties Called at Away')+theme_light()+xlab('Team')
+
+ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Home and Away for Each Team')+ylab('Average # of Penalties Called Home - Average # of Penalties Called at Away')+theme_light()+xlab('Team')
+
+
+#ggplot(NoGamesRefHome, aes(x=Referee,y=Difference))+geom_point()+ggtitle("Number of Penalties Given by Referee By Team")+coord_flip()+xlab('Team')+ylab('Average Number of Penalties given By Referee')+theme_light()
+
+#ggplot(NoGamesRefHome, aes(x=AvgAway,y=AvgHome))+geom_point()+ggtitle("Number of Penalties Given by Referee By Team")+coord_flip()+xlab('Average # of Penalties Away')+ylab('Average # of Penalties at Home')+theme_light()+ylim(0,17)+xlim(0,20)
 ```
 
