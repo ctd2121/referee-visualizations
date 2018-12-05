@@ -253,9 +253,9 @@ Nearly every single referee crew calls more penalties against the away team as c
 ```{r fig.cap="Figure 5: Penalties per Game by Quarter", fig.align= 'center'}
 df2 <- refData
 
-df_by_q <- df2[c(1,5,6,2)]
+df_by_q <- df2[c(1,27,28,2)]
 df_by_q <- df_by_q %>%
-  mutate(gameID = paste(GameDate, OffenseTeam, DefenseTeam))
+  mutate(gameID = paste(GameDate, Home, Away))
 reg_len <- n_distinct(df_by_q$gameID)
 ot <- df_by_q %>%
   filter(Quarter == 5)
