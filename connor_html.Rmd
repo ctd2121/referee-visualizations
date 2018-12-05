@@ -102,13 +102,13 @@ std_dev <- sd(df$YardLine)
 ggplot(df, aes(x=YardLine)) +
   geom_histogram(aes(y = ..density..),
                  binwidth = 5,
-                 color = "blue", fill = "lightblue") +
+                 color = "blue", fill = "lightgreen") +
   geom_density(color = "black", lwd=1.0) +
   stat_function(fun = dnorm, args = list(mean = m, sd = std_dev),
                 color = "red", lwd = 1.0) +
-  theme(plot.title = element_text(hjust = 0.5, size = 20),
-        axis.title.x = element_text(size = 14),
-        axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 18),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16)) +
   ggtitle("Penalties by Yard Line") +
   xlab("Yard Line") +
   ylab("Density")
