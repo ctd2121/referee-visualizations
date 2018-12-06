@@ -11,6 +11,14 @@ knitr::opts_chunk$set(message = FALSE,
                       echo = FALSE)
 ```
 
+
+<style>
+p.caption {
+  font-size: 1em;
+  font-family: 'Big Caslon';
+}
+</style>
+
 ## Introduction
 
 The National Football League (NFL) is arguably the most popular professional sports association in the United States. The NFL consists of 32 teams, and each team plays 16 games per season - this figure does not include playoff games, for which only a select subset of the 32 teams qualify. Every game is divided into four quarters of length 15 minutes, and each team's objective is to score more points than their opponent. Each team wants to defend their own end zone while attacking their opponent's end zone. Points in the NFL are awarded for touchdowns, extra points, safeties, and field goals. Detailed knowledge of football scoring is not particularly crucial for the purposes of comprehending the following analysis, but it may prove helpful in specific discussions.
@@ -166,7 +174,7 @@ keep(refData, sure = TRUE)
 Figure 2 gives insight on tendencies of NFL referee crews towards calling or not calling certain penalties. For example, the crew of Bill Vinovich seems to call more penalties than average regardless of type. Moreover, Walt Anderson's crew seems to call less penalties than average regardless of type. Moreover, perhaps if Jerome Boger and his crew are officiating a game, it may be reasonable to expect an offensive game as he calls less Pass Interference, Illegal Formation and Illegal Block than average and more Roughing a Protected Player and Illegal Tackle than average.
 
 
-## Away / Home Team Analysis
+## Analysis by Away / Home Team
 
 It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing at home. This difference can be a function of player familiarity with the field, away team pre-snap timing due to loudness of crowd, and referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against by penalty type are shown in the figure below:
 
@@ -282,7 +290,7 @@ ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
 As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
 
 ## Analysis by Yardline
-```{r}
+```{r fig.cap="Figure 6: Penalties by Yard Line", fig.align= 'center'}
 df <- refData
 
 #Get mean and standard deviation for YardLine
@@ -307,7 +315,7 @@ ggplot(df, aes(x=YardLine)) +
 
 The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they occur closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)?
 
-```{r}
+```{r fig.cap="Figure 7: Penalty Yard Line Averages by Referee", fig.align= 'center'}
 library(tidyverse)
 df_subset <- df %>%
   group_by(Referee) %>%
