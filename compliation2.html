@@ -319,267 +319,268 @@ Figure 7: Penalty Yard Line Averages by Referee
 </div>
 <p>This graph shows the distribution of average yard lines at which penalties were called by each referee. The graph shows that the average yard line of penalties for all referees is between 46 and 49. This finding is consistent with the results from the histogram in the previous visualization, where we saw that penalties were more frequently called at yard lines closer to the offensive team’s end zone than to the defensive team’s end zone.</p>
 <p>Although all referees showed the same general pattern in the average area where they called the penalties (that being between yard lines 46 and 49), there are three outliers, relatively speaking. In general, Bill Vinovich and Craig Wrolstad call penalties at greater yard lines than most do, while Gene Steratore calls penalties at lower yard lines than most.</p>
-<p>&lt;!DOCTYPE html&gt;
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>NFL Interactive Component</title>
-        <script src="https://d3js.org/d3.v4.min.js"></script></p>
+	<head>
+		<meta charset="utf-8">
+		<title>NFL Interactive Component</title>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
 
-<pre><code>&lt;/head&gt;
+	</head>
 
-&lt;body&gt;
+	<body>
 
-    &lt;div style=&quot;width: 600px&quot;&gt;
+		<div style="width: 600px">
+		
+			<h3>EDAV Project: Interactive Component</h3>
+		
+			<p>
+				This webpage is to act as an interactive application that users can
+				use to learn about how penalities within the NFL occur at different frequencies depending on field position.
+			</p>
 
-        &lt;h3&gt;EDAV Project: Interactive Component&lt;/h3&gt;
+			<p>
+				To get started place your mouse on a 10 yard zone of the field.  
+			</p>
+		
+		</div>
+	  
+		<script type="text/javascript">
 
-        &lt;p&gt;
-            This webpage is to act as an interactive application that users can
-            use to learn about how penalities within the NFL occur at different frequencies depending on field position.
-        &lt;/p&gt;
+			//  Width and height of svg
+			var w = 700;
+			var h = 400;
+			var padding = 30;
+			var lineWidth = 2;
+			var logoSize = 70;
+			var markSize = 35;
 
-        &lt;p&gt;
-            To get started place your mouse on a 10 yard zone of the field.  
-        &lt;/p&gt;
+			//    Create SVG element		
+			var svg = d3.select("body").append("svg")
+				.attr("width", w)
+				.attr("height", h)
+			
+			fieldMarkings = [-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-    &lt;/div&gt;
+			//loading data
+			var data_url = "https://raw.githubusercontent.com/JacobK-/referee-visualizations/8aa62034d4c94ac36b67013a2dca93dbfced5cae/data/ic_data.csv?token=AKcaw1spn1MTfvJx9ecKE8Lhiu6BgZCoks5cEWI_wA%3D%3D"
+			var penalty_data
+			d3.csv(data_url, function(error, data) {
+				if (error) throw error;
+				penalty_data = data;
 
-    &lt;script type=&quot;text/javascript&quot;&gt;
+				//data_order 	(delay of game (0), illegal block, illegal formation, illegal tackle, illegal use of hands,
+				//				offside, pass interference (6), roughing a protected player, too many men, unsportsmanlike conduct, other (10))
 
-        //  Width and height of svg
-        var w = 700;
-        var h = 400;
-        var padding = 30;
-        var lineWidth = 2;
-        var logoSize = 70;
-        var markSize = 35;
+			svg.selectAll("rect")
+				.data(fieldMarkings)
+				.enter().append("rect")
+					.attr("x", function(d) { return (d+10)*(w/120) })
+					.attr("y", 0)
+					.attr("width", w/12)
+					.attr("height", h)
+					.attr("fill","lightgreen")
+			svg.selectAll('rect')
+				.each(function(d, i){
+					if (i == 0 || i == 11) {
+						d3.select(this)
+						.attr("fill", "red");
+					}
+					else {
+						d3.select(this)
+						.on("mouseover", function(d) {
+							d3.select(this)
+							.attr("fill","green")
+							refresh(d)
+						})
+						.on("mouseout", function(d) {		
+							d3.select(this)
+							.attr("fill","lightgreen")
+							refresh(-1)
+						})
+					}
+				});
 
-        //    Create SVG element        
-        var svg = d3.select(&quot;body&quot;).append(&quot;svg&quot;)
-            .attr(&quot;width&quot;, w)
-            .attr(&quot;height&quot;, h)
+			svg.selectAll("line")
+				.data(fieldMarkings.slice(1))
+				.enter().append("line")
+					.attr("x1", function(d) { return (d+10)*(w/120) })
+					.attr("y1", 0)
+					.attr("x2", function(d) { return (d+10)*(w/120) })
+					.attr("y2", h)
+					.attr("stroke","white")
+					.attr("stroke-width",lineWidth)
+			
+			svg.selectAll("text")
+				.data(fieldMarkings.slice(2,-1))
+				.enter().append("text")
+					.attr("x", function(d) { return (d+10)*(w/120) - markSize/2 })
+					.attr("y", 100)
+					.attr("fill","white")
+					.attr("font-family", "clarendon")
+	                .attr("font-size", markSize)
+					.text( function(d) { return d })
 
-        fieldMarkings = [-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-        //loading data
-        var data_url = &quot;https://raw.githubusercontent.com/JacobK-/referee-visualizations/8aa62034d4c94ac36b67013a2dca93dbfced5cae/data/ic_data.csv?token=AKcaw1spn1MTfvJx9ecKE8Lhiu6BgZCoks5cEWI_wA%3D%3D&quot;
-        var penalty_data
-        d3.csv(data_url, function(error, data) {
-            if (error) throw error;
-            penalty_data = data;
+			svg.append("svg:image")
+				.attr('x', w/2-logoSize/2)
+				.attr('y', h/2-logoSize/2)
+				.attr('width', logoSize)
+				.attr('height', logoSize)
+				.attr("xlink:href", "https://raw.githubusercontent.com/JacobK-/referee-visualizations/master/data/nfl_logo.png?token=AKcaw6mOuNjXUB2Vxkj1BwzRSnt4wMDiks5cEYZLwA%3D%3D")
 
-            //data_order    (delay of game (0), illegal block, illegal formation, illegal tackle, illegal use of hands,
-            //              offside, pass interference (6), roughing a protected player, too many men, unsportsmanlike conduct, other (10))
+			svg.append("text").text("ENDZONE")
+				.attr("x",200).attr("y",-660).attr("text-anchor", "middle").style("font-size", "30px").attr("transform", "rotate(90)").attr("font-weight","bold")
 
-        svg.selectAll(&quot;rect&quot;)
-            .data(fieldMarkings)
-            .enter().append(&quot;rect&quot;)
-                .attr(&quot;x&quot;, function(d) { return (d+10)*(w/120) })
-                .attr(&quot;y&quot;, 0)
-                .attr(&quot;width&quot;, w/12)
-                .attr(&quot;height&quot;, h)
-                .attr(&quot;fill&quot;,&quot;lightgreen&quot;)
-        svg.selectAll(&#39;rect&#39;)
-            .each(function(d, i){
-                if (i == 0 || i == 11) {
-                    d3.select(this)
-                    .attr(&quot;fill&quot;, &quot;red&quot;);
-                }
-                else {
-                    d3.select(this)
-                    .on(&quot;mouseover&quot;, function(d) {
-                        d3.select(this)
-                        .attr(&quot;fill&quot;,&quot;green&quot;)
-                        refresh(d)
-                    })
-                    .on(&quot;mouseout&quot;, function(d) {       
-                        d3.select(this)
-                        .attr(&quot;fill&quot;,&quot;lightgreen&quot;)
-                        refresh(-1)
-                    })
-                }
-            });
 
-        svg.selectAll(&quot;line&quot;)
-            .data(fieldMarkings.slice(1))
-            .enter().append(&quot;line&quot;)
-                .attr(&quot;x1&quot;, function(d) { return (d+10)*(w/120) })
-                .attr(&quot;y1&quot;, 0)
-                .attr(&quot;x2&quot;, function(d) { return (d+10)*(w/120) })
-                .attr(&quot;y2&quot;, h)
-                .attr(&quot;stroke&quot;,&quot;white&quot;)
-                .attr(&quot;stroke-width&quot;,lineWidth)
+			//HISTOGRAM BELOW// // based on: http://bl.ocks.org/nnattawat/8916402
+			var color = "steelblue";
+			// var values = d3.range(1000).map(d3.randomNormal(20, 5));
+			var values = [];
+			for (i = 0; i<penalty_data.length; i++) {
+				values.push(penalty_data[i]['PenaltyType'])
+			}
+			var margin = {top: 40, right: 30, bottom: 30, left: 30};
+    		var width = w - margin.left - margin.right;
+    		var height = h - margin.top - margin.bottom;
+			var num_games = 1205;
+			// A formatter for counts.
+			var formatCount = d3.format(",.2f");
 
-        svg.selectAll(&quot;text&quot;)
-            .data(fieldMarkings.slice(2,-1))
-            .enter().append(&quot;text&quot;)
-                .attr(&quot;x&quot;, function(d) { return (d+10)*(w/120) - markSize/2 })
-                .attr(&quot;y&quot;, 100)
-                .attr(&quot;fill&quot;,&quot;white&quot;)
-                .attr(&quot;font-family&quot;, &quot;clarendon&quot;)
-                .attr(&quot;font-size&quot;, markSize)
-                .text( function(d) { return d })
 
-        svg.append(&quot;svg:image&quot;)
-            .attr(&#39;x&#39;, w/2-logoSize/2)
-            .attr(&#39;y&#39;, h/2-logoSize/2)
-            .attr(&#39;width&#39;, logoSize)
-            .attr(&#39;height&#39;, logoSize)
-            .attr(&quot;xlink:href&quot;, &quot;https://raw.githubusercontent.com/JacobK-/referee-visualizations/master/data/nfl_logo.png?token=AKcaw6mOuNjXUB2Vxkj1BwzRSnt4wMDiks5cEYZLwA%3D%3D&quot;)
+			/**var x = d3.scaleLinear()
+				.domain([0, 11])
+				.range([0, width]);
+			**/
+			var x = d3.scaleBand()
+				.domain(['Delay of Game', 'Illegal Block', 'Illegal Formation', 'Illegal Tackle', 'Illegal Use of Hands', 'Offside',
+					'Pass Interference', 'Roughing a Protected Player', 'Too Many Men on the Field', 'Unsportsmanlike Conduct', 'Other'])
+				.range([0, width])
+				.paddingInner(0.05);
+			// Generate a histogram using twenty uniformly-spaced bins.
+			var data = d3.histogram()
+			.thresholds(d3.range(0, width, (width - 0) / 11))
+			(values.map(x));
 
-        svg.append(&quot;text&quot;).text(&quot;ENDZONE&quot;)
-            .attr(&quot;x&quot;,200).attr(&quot;y&quot;,-660).attr(&quot;text-anchor&quot;, &quot;middle&quot;).style(&quot;font-size&quot;, &quot;30px&quot;).attr(&quot;transform&quot;, &quot;rotate(90)&quot;).attr(&quot;font-weight&quot;,&quot;bold&quot;)
+			var yMax = d3.max(data, function(d){return d.length});
+			var yMin = d3.min(data, function(d){return d.length});
+			var colorScale = d3.scaleLinear()
+						.domain([yMin, yMax])
+						.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 
-        //HISTOGRAM BELOW// // based on: http://bl.ocks.org/nnattawat/8916402
-        var color = &quot;steelblue&quot;;
-        // var values = d3.range(1000).map(d3.randomNormal(20, 5));
-        var values = [];
-        for (i = 0; i&lt;penalty_data.length; i++) {
-            values.push(penalty_data[i][&#39;PenaltyType&#39;])
-        }
-        var margin = {top: 40, right: 30, bottom: 30, left: 30};
-        var width = w - margin.left - margin.right;
-        var height = h - margin.top - margin.bottom;
-        var num_games = 1205;
-        // A formatter for counts.
-        var formatCount = d3.format(&quot;,.2f&quot;);
+			var y = d3.scaleLinear()
+				.domain([0, yMax])
+				.range([height, 0]);
 
-        /**var x = d3.scaleLinear()
-            .domain([0, 11])
-            .range([0, width]);
-        **/
-        var x = d3.scaleBand()
-            .domain([&#39;Delay of Game&#39;, &#39;Illegal Block&#39;, &#39;Illegal Formation&#39;, &#39;Illegal Tackle&#39;, &#39;Illegal Use of Hands&#39;, &#39;Offside&#39;,
-                &#39;Pass Interference&#39;, &#39;Roughing a Protected Player&#39;, &#39;Too Many Men on the Field&#39;, &#39;Unsportsmanlike Conduct&#39;, &#39;Other&#39;])
-            .range([0, width])
-            .paddingInner(0.05);
-        // Generate a histogram using twenty uniformly-spaced bins.
-        var data = d3.histogram()
-        .thresholds(d3.range(0, width, (width - 0) / 11))
-        (values.map(x));
+			var xAxis = d3.axisBottom()
+				.scale(x);
 
-        var yMax = d3.max(data, function(d){return d.length});
-        var yMin = d3.min(data, function(d){return d.length});
-        var colorScale = d3.scaleLinear()
-                    .domain([yMin, yMax])
-                    .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+			var svg2 = d3.select("body").append("svg")
+				.attr("width", width + margin.left + margin.right)
+    			.attr("height", height + margin.top + margin.bottom)
+  			.append("g")
+    			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var y = d3.scaleLinear()
-            .domain([0, yMax])
-            .range([height, 0]);
+			var bar = svg2.selectAll(".bar")
+				.data(data)
+			.enter().append("g")
+				.attr("class", "bar")
+				.attr("transform", function(d) { var x_val = d[0] || 0; return "translate(" + 1.01*d.x0 + "," + y(d.length) + ")";});
+				
+			bar.append("rect")
+				.attr("x", 0)
+				.attr("width", x.bandwidth()-2)
+				.attr("height", function(d) { return height - y(d.length); })
+				.attr("fill", function(d) { return colorScale(d.length) });
 
-        var xAxis = d3.axisBottom()
-            .scale(x);
+			bar.append("text")
+				.attr("dy", ".75em")
+				.attr("y", -14)
+				.attr("x", x.bandwidth()/2 - 2)
+				.attr("text-anchor", "middle")
+				.text(function(d) { return formatCount(d.length/num_games); });
 
-        var svg2 = d3.select(&quot;body&quot;).append(&quot;svg&quot;)
-            .attr(&quot;width&quot;, width + margin.left + margin.right)
-            .attr(&quot;height&quot;, height + margin.top + margin.bottom)
-        .append(&quot;g&quot;)
-            .attr(&quot;transform&quot;, &quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;);
+			svg2.append("g")
+				.attr("class", "x-axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
 
-        var bar = svg2.selectAll(&quot;.bar&quot;)
-            .data(data)
-        .enter().append(&quot;g&quot;)
-            .attr(&quot;class&quot;, &quot;bar&quot;)
-            .attr(&quot;transform&quot;, function(d) { var x_val = d[0] || 0; return &quot;translate(&quot; + 1.01*d.x0 + &quot;,&quot; + y(d.length) + &quot;)&quot;;});
+			svg2.select(".x-axis").selectAll("g").select("text").attr("transform", "rotate(15)")
+			svg2.select(".x-axis").selectAll("g").select("text").attr("dy", "10")
+			svg2.select(".x-axis").select("g:nth-child(6)").select("text").text("Illegal Hands")
+			svg2.select(".x-axis").select("g:nth-child(9)").select("text").text("Roughing")
+			svg2.select(".x-axis").select("g:nth-child(10)").select("text").text("Too Many Men")
+			svg2.select(".x-axis").select("g:nth-child(11)").select("text").text("Unsportsmanlike")
+			svg2.append("text").text("Frequency of Penalties Per Game")
+				.attr("x",width/2).attr("y",-15).attr("text-anchor", "middle").style("font-size", "30px")
 
-        bar.append(&quot;rect&quot;)
-            .attr(&quot;x&quot;, 0)
-            .attr(&quot;width&quot;, x.bandwidth()-2)
-            .attr(&quot;height&quot;, function(d) { return height - y(d.length); })
-            .attr(&quot;fill&quot;, function(d) { return colorScale(d.length) });
 
-        bar.append(&quot;text&quot;)
-            .attr(&quot;dy&quot;, &quot;.75em&quot;)
-            .attr(&quot;y&quot;, -14)
-            .attr(&quot;x&quot;, x.bandwidth()/2 - 2)
-            .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-            .text(function(d) { return formatCount(d.length/num_games); });
+			/*var svg3 = d3.select("body").append("svg")
+				.attr("width", 600 + margin.left + margin.right)
+    			.attr("height", 100 + margin.top + margin.bottom)
+  			.append("g")
+    			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+			svg3.append("rect")
+				.attr("width", "100%")
+				.attr("height", "100%")
+				.attr("fill", "lightgrey")
+				.style("opacity","0.7");
+			*/
+			/*
+			* Adding refresh method to reload new data
+			*/
+			function refresh(filter){
 
-        svg2.append(&quot;g&quot;)
-            .attr(&quot;class&quot;, &quot;x-axis&quot;)
-            .attr(&quot;transform&quot;, &quot;translate(0,&quot; + height + &quot;)&quot;)
-            .call(xAxis);
+				var values = [];
+				for (i = 0; i<penalty_data.length; i++) {
+					if (filter == -1) {
+						values.push(penalty_data[i]['PenaltyType'])
+					}
+					else if (penalty_data[i]['YardLine'] >= filter && penalty_data[i]['YardLine'] < filter + 10) {
+						values.push(penalty_data[i]['PenaltyType'])
+					}
+				}
+				var data = d3.histogram()
+				.thresholds(d3.range(0, width, (width - 0) / 11))
+				(values.map(x));
 
-        svg2.select(&quot;.x-axis&quot;).selectAll(&quot;g&quot;).select(&quot;text&quot;).attr(&quot;transform&quot;, &quot;rotate(15)&quot;)
-        svg2.select(&quot;.x-axis&quot;).selectAll(&quot;g&quot;).select(&quot;text&quot;).attr(&quot;dy&quot;, &quot;10&quot;)
-        svg2.select(&quot;.x-axis&quot;).select(&quot;g:nth-child(6)&quot;).select(&quot;text&quot;).text(&quot;Illegal Hands&quot;)
-        svg2.select(&quot;.x-axis&quot;).select(&quot;g:nth-child(9)&quot;).select(&quot;text&quot;).text(&quot;Roughing&quot;)
-        svg2.select(&quot;.x-axis&quot;).select(&quot;g:nth-child(10)&quot;).select(&quot;text&quot;).text(&quot;Too Many Men&quot;)
-        svg2.select(&quot;.x-axis&quot;).select(&quot;g:nth-child(11)&quot;).select(&quot;text&quot;).text(&quot;Unsportsmanlike&quot;)
-        svg2.append(&quot;text&quot;).text(&quot;Frequency of Penalties Per Game&quot;)
-            .attr(&quot;x&quot;,width/2).attr(&quot;y&quot;,-15).attr(&quot;text-anchor&quot;, &quot;middle&quot;).style(&quot;font-size&quot;, &quot;30px&quot;)
+				// Reset y domain using new data
+				var yMax = d3.max(data, function(d){return d.length});
+				var yMin = d3.min(data, function(d){return d.length});
+				y.domain([0, yMax]);
+				var colorScale = d3.scaleLinear()
+							.domain([yMin, yMax])
+							.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 
-        /*var svg3 = d3.select(&quot;body&quot;).append(&quot;svg&quot;)
-            .attr(&quot;width&quot;, 600 + margin.left + margin.right)
-            .attr(&quot;height&quot;, 100 + margin.top + margin.bottom)
-        .append(&quot;g&quot;)
-            .attr(&quot;transform&quot;, &quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;)
-        svg3.append(&quot;rect&quot;)
-            .attr(&quot;width&quot;, &quot;100%&quot;)
-            .attr(&quot;height&quot;, &quot;100%&quot;)
-            .attr(&quot;fill&quot;, &quot;lightgrey&quot;)
-            .style(&quot;opacity&quot;,&quot;0.7&quot;);
-        */
-        /*
-        * Adding refresh method to reload new data
-        */
-        function refresh(filter){
+				var bar = svg2.selectAll(".bar").data(data);
 
-            var values = [];
-            for (i = 0; i&lt;penalty_data.length; i++) {
-                if (filter == -1) {
-                    values.push(penalty_data[i][&#39;PenaltyType&#39;])
-                }
-                else if (penalty_data[i][&#39;YardLine&#39;] &gt;= filter &amp;&amp; penalty_data[i][&#39;YardLine&#39;] &lt; filter + 10) {
-                    values.push(penalty_data[i][&#39;PenaltyType&#39;])
-                }
-            }
-            var data = d3.histogram()
-            .thresholds(d3.range(0, width, (width - 0) / 11))
-            (values.map(x));
+				bar.transition()
+					.duration(1000)
+					.attr("transform", function(d) { return "translate(" + 1.01*d.x0 + "," + y(d.length) + ")"; });
 
-            // Reset y domain using new data
-            var yMax = d3.max(data, function(d){return d.length});
-            var yMin = d3.min(data, function(d){return d.length});
-            y.domain([0, yMax]);
-            var colorScale = d3.scaleLinear()
-                        .domain([yMin, yMax])
-                        .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+				bar.select("rect")
+					.transition()
+					.duration(1000)
+					.attr("height", function(d) { return height - y(d.length); })
+					.attr("fill", function(d) { return colorScale(d.length) });
 
-            var bar = svg2.selectAll(&quot;.bar&quot;).data(data);
+				bar.select("text")
+					.transition()
+					.duration(1000)
+					.text(function(d) { return formatCount(d.length/num_games); });
 
-            bar.transition()
-                .duration(1000)
-                .attr(&quot;transform&quot;, function(d) { return &quot;translate(&quot; + 1.01*d.x0 + &quot;,&quot; + y(d.length) + &quot;)&quot;; });
+			}
 
-            bar.select(&quot;rect&quot;)
-                .transition()
-                .duration(1000)
-                .attr(&quot;height&quot;, function(d) { return height - y(d.length); })
-                .attr(&quot;fill&quot;, function(d) { return colorScale(d.length) });
-
-            bar.select(&quot;text&quot;)
-                .transition()
-                .duration(1000)
-                .text(function(d) { return formatCount(d.length/num_games); });
-
-        }
-
-        /**Calling refresh repeatedly.
-        setInterval(function() {
-        var values = d3.range(1000).map(d3.randomNormal(20, 5));
-        refresh(values);
-        }, 2000); **/
-    });
-
-    &lt;/script&gt;
-&lt;/body&gt;
-</code></pre>
-
-<p></html></p>
-
+			/**Calling refresh repeatedly.
+			setInterval(function() {
+			var values = d3.range(1000).map(d3.randomNormal(20, 5));
+			refresh(values);
+			}, 2000); **/
+		});
+			
+		</script>
+	</body>
+</html>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
