@@ -339,6 +339,11 @@ This graph shows the distribution of average yard lines at which penalties were 
 
 Although all referees showed the same general pattern in the average area where they called the penalties (that being between yard lines 46 and 49), there are three outliers, relatively speaking. In general, Bill Vinovich and Craig Wrolstad call penalties at greater yard lines than most do, while Gene Steratore calls penalties at lower yard lines than most.
 
+```{r fig.align='right'}
+htmltools::includeHTML("./docs/index.html")
+```
+
+
 ## Conclusion
 
 While many unique insights were uncovered through this analysis, there remain a few interesting directions in which we can proceed to perform further exploratory data analysis.
