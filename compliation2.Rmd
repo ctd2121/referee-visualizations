@@ -11,7 +11,6 @@ knitr::opts_chunk$set(message = FALSE,
                       echo = FALSE)
 ```
 
-
 <style>
 p.caption {
   font-size: 1em;
@@ -98,12 +97,13 @@ library(ggplot2)
 library(scales)
 library(gdata)
 library(tidyr)
+library(kfigr)
 
 refData = read.csv('./data/df_ref.csv')
 
 ```
 
-```{r fig.height = 6, fig.cap="Figure 1: Average Number of Each Penalty Type Called Per Game", fig.align= 'center'}
+```{r anchor='figure', fig.height = 6, fig.cap="Figure 1: Average Number of Each Penalty Type Called Per Game", fig.align= 'center'}
 
 #Putting Together Data
 
@@ -155,7 +155,7 @@ ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y
 Figure 1 shows how the average referee will make penalty calls in a game. Offside and Illegal Block are the most common penalties. This commonality is not suprising as running accross the line of scrimmage and blocking are two fundamental aspects of the game and thus are bound to be done incorrectly sometimes. Moreover, it is also not suprising particularly sloppy penalties such as Too Many Men on the Field, Illegal Formation and Delay of game are rare. Moreover, not every referee crew calls penalties at the exact rate highlighted in Figure 1. Figure 2 below shows the percentage of increase or decrease from these averages.
 
 
-```{r fig.width = 8, fig.height = 16, fig.cap="Figure 2: Percentage of Increase/Decrease from Average Penalty Type", fig.align= 'center'}
+```{r anchor='figure', fig.width = 8, fig.height = 16, fig.cap="Figure 2: Percentage of Increase/Decrease from Average Penalty Type", fig.align= 'center'}
 #Setting Color Scheme
 PenTypeCounts$FreqType = PenTypeCounts$Freq < 0
 
@@ -178,7 +178,7 @@ Figure 2 gives insight on tendencies of NFL referee crews towards calling or not
 
 It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing at home. This difference can be a function of player familiarity with the field, away team pre-snap timing due to loudness of crowd, and referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against by penalty type are shown in the figure below:
 
-```{r, fig.cap="Figure 3: Percentage of Penalties called Against Home and Away Teams by Penalty Type", fig.align= 'center', fig.width = 8}
+```{r, anchor='figure', fig.cap="Figure 3: Percentage of Penalties called Against Home and Away Teams by Penalty Type", fig.align= 'center', fig.width = 8}
 
 #Reading in data
 df_ref <- refData
@@ -212,7 +212,7 @@ ggplot(df_percentage, aes(x = reorder(Var1, - plotOrder), y = Freq, color = agai
 
 It is not at all suprising that a timing penalty such as delay of game is the most unfavorable towards the away team, but the higher degree of Illegal Tackle penalties is decently suprising. Illegal tackle is not based on familiarity with field or pre-snap timing which suggests that it may be a function of biased referee crews. Moreover, the percentage of penalties called against away split by referee is shown in the figure below:
 
-```{r, fig.cap="Figure 4: Percentage of Penalties called Against Home and Away Teams by Referee", fig.align= 'center', fig.height= 7, fig.width = 7.75}
+```{r ref_home_away, anchor='figure', fig.cap="Figure 4: Percentage of Penalties called Against Home and Away Teams by Referee", fig.align= 'center', fig.height= 7, fig.width = 7.75}
 
 rm(df_percentage)
 rm(df_percentage2)
@@ -257,7 +257,7 @@ keep(HA_byRef, refData, sure = TRUE)
 Nearly every single referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below 50% against away. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. Moreover, in the end all of the referee penalty calling split is around 50% and is thus fairly even.
 
 ## Analysis by Quarter
-```{r fig.cap="Figure 5: Penalties per Game by Quarter", fig.align= 'center'}
+```{r penalties_by_q, anchor='figure', fig.cap="Figure 5: Penalties per Game by Quarter", fig.align= 'center'}
 df2 <- refData
 
 df_by_q <- df2[c(1,27,28,2)]
@@ -275,7 +275,7 @@ df_by_q$Quarter <- as.factor(df_by_q$Quarter)
 levels(df_by_q$Quarter) <- c("Q1", "Q2", "Q3", "Q4", "Overtime")
 
 
-penalties_by_q <- ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
+ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
   geom_bar(stat = "identity", color = "black", fill = "red", alpha = 0.6) +
   ggtitle("Penalties per Game by Quarter") +
   xlab("Quarter") +
@@ -283,14 +283,12 @@ penalties_by_q <- ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) 
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
        plot.title = element_text(hjust = 0.5, size = 18))
-
-penalties_by_q
 ```
 
 As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
 
 ## Analysis by Yardline
-```{r fig.cap="Figure 6: Penalties by Yard Line", fig.align= 'center'}
+```{r anchor='figure', fig.cap="Figure 6: Penalties by Yard Line", fig.align= 'center'}
 df <- refData
 
 #Get mean and standard deviation for YardLine
@@ -315,7 +313,7 @@ ggplot(df, aes(x=YardLine)) +
 
 The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they occur closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)?
 
-```{r fig.cap="Figure 7: Penalty Yard Line Averages by Referee", fig.align= 'center'}
+```{r anchor='figure', fig.cap="Figure 7: Penalty Yard Line Averages by Referee", fig.align= 'center'}
 library(tidyverse)
 df_subset <- df %>%
   group_by(Referee) %>%
@@ -343,19 +341,11 @@ Although all referees showed the same general pattern in the average area where 
 
 The frequency, consistency, and possible biases of penalty calls in the NFL are areas of football analytics that have each individually been given only minimal attention, let alone all together. By combining various publicly-available data sources, we created a comprehensive dataset that includes NFL play-by-play game data joined with detailed referee and granular penalty data.
 
-Once we combined the various data sources into a single dataset, we began exploring the data from multiple angles. An examination of the distribution of penalties by quarter prouced the graph below.
-
-```{r fig.align = 'center'}
-penalties_by_q
-```
+Once we combined the various data sources into a single dataset, we began exploring the data from multiple angles. An examination of the distribution of penalties by quarter produced `r figr('penalties_by_q', prefix = TRUE)`.
 
 Slight spikes in the frequency of penalty calls occur in the second quarter and fourth quarter of games. A high frequency of penalties in the fourth quarters of games makes sense because the game is nearing conclusion and teams take more risks in an attempt to either keep or take over the lead. However, quarter two yielding the highest frequency of penalty calls is a somewhat surprising result. At this time the game has been underway for over a full quarter which makes one intuitively think that the flow of the game is relatively steady, and both teams and referees have settled into their elements. Overtime (which generally lasts between half and three-quarters of the duration of a normal quarter) yields a penalty frequency that is seemingly proportional to a normal quarter, given the duration of play in overtime.
 
-After some other high-level exploration of penalty distributions, we began comparing penalties called by referee. One of the most important findings of our analysis is conveyed in the following graph:
-
-```{r fig.align = 'center', fig.height= 7, fig.width = 7.75}
-HA_byRef
-```
+After some other high-level exploration of penalty distributions, we began comparing penalties called by referee. One of the most important findings of our analysis is conveyed in `r figr('ref_home_away', prefix = TRUE)`.
 
 This graph shows the percentage of penalties that each referee crew calls against the home team (i.e. the team playing at their home stadium) versus that of the away team (i.e. the team playing on the road). We observe that all referee crews, except for that of John Hussey, call more penalties against the away team than they do against the home team. Although it cannot be stated with certainty whether referee crews are biased in favor of home teams or whether teams legitimately commit penalties at a lower rate when they are playing at home, this is certainly a notable insight.
 
