@@ -246,13 +246,12 @@ df_percentage$avg = FALSE
 df_percentage[df_percentage$Var1 == "AVERAGE",]$avg = TRUE
 
 #plot
-ggplot(df_percentage, aes(x = reorder(Var1, -plotOrder), y = Freq, color = against)) + geom_hline(yintercept=0.5)  + geom_point(stat = "identity", size = 3, aes(shape = avg)) + xlab("Penalty Type") + ylab("Percentage of Penalties Against") + ggtitle("% of Penalties called Against Home/Away Teams by Referee") + scale_y_continuous(labels = percent, limits=c(0.4,0.6)) + labs(color = "Percentage Called Against") +coord_flip() + guides(shape = FALSE)+
+HA_byRef <- ggplot(df_percentage, aes(x = reorder(Var1, -plotOrder), y = Freq, color = against)) + geom_hline(yintercept=0.5)  + geom_point(stat = "identity", size = 3, aes(shape = avg)) + xlab("Penalty Type") + ylab("Percentage of Penalties Against") + ggtitle("% of Penalties called Against Home/Away Teams by Referee") + scale_y_continuous(labels = percent, limits=c(0.4,0.6)) + labs(color = "Percentage Called Against") +coord_flip() + guides(shape = FALSE)+
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
        plot.title = element_text(hjust = 0.5, size = 18))
-
-keep(refData, sure = TRUE)
-
+HA_byRef
+keep(HA_byRef, refData, sure = TRUE)
 ```
 
 Nearly every single referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below 50% against away. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. Moreover, in the end all of the referee penalty calling split is around 50% and is thus fairly even.
@@ -276,7 +275,7 @@ df_by_q$Quarter <- as.factor(df_by_q$Quarter)
 levels(df_by_q$Quarter) <- c("Q1", "Q2", "Q3", "Q4", "Overtime")
 
 
-ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
+penalties_by_q <- ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
   geom_bar(stat = "identity", color = "black", fill = "red", alpha = 0.6) +
   ggtitle("Penalties per Game by Quarter") +
   xlab("Quarter") +
@@ -285,6 +284,7 @@ ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
        axis.title.y = element_text(size = 16),
        plot.title = element_text(hjust = 0.5, size = 18))
 
+penalties_by_q
 ```
 
 As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
@@ -338,6 +338,34 @@ ggplot(df_subset, aes(x=mean_yard_line,
 This graph shows the distribution of average yard lines at which penalties were called by each referee. The graph shows that the average yard line of penalties for all referees is between 46 and 49. This finding is consistent with the results from the histogram in the previous visualization, where we saw that penalties were more frequently called at yard lines closer to the offensive team's end zone than to the defensive team's end zone.
 
 Although all referees showed the same general pattern in the average area where they called the penalties (that being between yard lines 46 and 49), there are three outliers, relatively speaking. In general, Bill Vinovich and Craig Wrolstad call penalties at greater yard lines than most do, while Gene Steratore calls penalties at lower yard lines than most.
+
+## Executive Summary
+
+The frequency, consistency, and possible biases of penalty calls in the NFL are areas of football analytics that have each individually been given only minimal attention, let alone all together. By combining various publicly-available data sources, we created a comprehensive dataset that includes NFL play-by-play game data joined with detailed referee and granular penalty data.
+
+Once we combined the various data sources into a single dataset, we began exploring the data from multiple angles. An examination of the distribution of penalties by quarter prouced the graph below.
+
+```{r fig.align = 'center'}
+penalties_by_q
+```
+
+Slight spikes in the frequency of penalty calls occur in the second quarter and fourth quarter of games. A high frequency of penalties in the fourth quarters of games makes sense because the game is nearing conclusion and teams take more risks in an attempt to either keep or take over the lead. However, quarter two yielding the highest frequency of penalty calls is a somewhat surprising result. At this time the game has been underway for over a full quarter which makes one intuitively think that the flow of the game is relatively steady, and both teams and referees have settled into their elements. Overtime (which generally lasts between half and three-quarters of the duration of a normal quarter) yields a penalty frequency that is seemingly proportional to a normal quarter, given the duration of play in overtime.
+
+After some other high-level exploration of penalty distributions, we began comparing penalties called by referee. One of the most important findings of our analysis is conveyed in the following graph:
+
+```{r fig.align = 'center', fig.height= 7, fig.width = 7.75}
+HA_byRef
+```
+
+This graph shows the percentage of penalties that each referee crew calls against the home team (i.e. the team playing at their home stadium) versus that of the away team (i.e. the team playing on the road). We observe that all referee crews, except for that of John Hussey, call more penalties against the away team than they do against the home team. Although it cannot be stated with certainty whether referee crews are biased in favor of home teams or whether teams legitimately commit penalties at a lower rate when they are playing at home, this is certainly a notable insight.
+
+To further explore referee crew tendencies, we examined the number of penalties called per game by each referee crew against each team. The graph below displays the notable findings from this exploration.
+
+```{r}
+# INSERT PATRICK'S GRAPH HERE
+```
+
+This visual includes only the teams which have one or more outliers in their distributions. It is interesting to see which referee crews are determined as outliers in the graph, and it is particularly noteworthy when referee crews are deemed outliers at the bottom of the distribution for some team(s), while deemed outliers at the top of the distribution for other team(s). For example, we see that John Hussey's referee crew calls significantly fewer penalties per game than the average against the New England patriots (NE), while the crew calls significantly more penalties per game than the average against the Atlanta Falcons (ATL) and the New York Giants (NYG).
 
 ```{r fig.align='right'}
 htmltools::includeHTML("./docs/index.html")
