@@ -63,12 +63,12 @@ Moreover, after the data from Pro-Football-Focus and NFL Savant are merged, ther
 ## Main Analysis
 #### Data Processing
 
-To simplify the data, penalty types are grouped together with a universal grouping term. Moreover, some terms accounted for less than 1% of the data after the grouping took place (Fair Catch Interference, Inelgible Player Downfield, Illegal Action to Block a Field Goal, Illegal Bat, Illegal Forward Pass, Illegal Kickoff, Illegal Player Out of Bounds, Intentional Grounding, Invalid Fair Catch Signal and Tripping) and were grouped again into the "Other" category.  Here is a table highlighting how each penalty type was grouped:
+Many of the penalty types in our dataset are quite similar in nature (e.g. Offensive Offside and Defensive Offside), so grouped such instances using universal grouping terms, as shown in the below table. Moreover, certain penalty type groupings accounted for less than 1% of all observations even after the groupings were applied, and such groups were then grouped again into the "Other" category. The table below highlights all groupings we used for our analysis.
 
 | Grouping Term    |  Penalty Types Included |
 |------------------|----------------------------------------------------------------------------------------|
-| <strong> Delay of Game </strong> | Delay of Game, Defensive Delay of Game, Delay of Kickoff |
-| <strong> Illegal Block </strong>| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Wasste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Offensive Holding, Low Block |
+| <strong> Delay of Game </strong> | Defensive Delay of Game, Delay of Kickoff, Delay of Game |
+| <strong> Illegal Block </strong>| Chop Block, Clipping, Illegal Blindside Block, Illegal Block Above the Waste, Illegal Crackback, Illegal Peelback, Illegal Wedge, Low Block, Offensive Holding |
 |<strong> Illegal Formation </strong>| Illegal Formation, Illegal Motion, Illegal Shift |
 |<strong> Illegal Tackle </strong>| Face Mask (15 Yards), Horse Collar Tackle, Lowering the Head to Initiate Contact |
 |<strong> Illegal Use of Hands </strong>| Illegal Use of Hands
@@ -77,11 +77,9 @@ To simplify the data, penalty types are grouped together with a universal groupi
 |<strong> Roughing a Protected Player </strong>| Roughing the Kicker, Roughing the Passer, Running Into the Kicker |
 |<strong> Too Many Men on the Field </strong>| Defensive 12 On-Field, Defensive Too Many Men on the Field, Illegal Substitution, Offensive 12 On-Field, Offensive Too Many Men on Field |
 |<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
-| <strong> Other </strong> | <strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch<br><br> <strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong>Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
-
+| <strong> Other </strong> | <strong>Fair Catch Interference:</strong> Fair Catch Interference, Kick Catch Interference, Interference with Opportunity to Catch<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leverage, Leaping<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong> Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
 <br>
-
-Additionally, due to teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to match the current data:
+Additionally, due to some teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to ensure consistency in the dataset:
 
 | Team Name |  Old Abbreviation   |  New Abbreviation |
 |-----------|----------------------|-------------------|
@@ -92,7 +90,7 @@ Additionally, due to teams moving cities as well as general inconsistency of abb
 
 #### Analysis by Penalty Type
 
-Week-to-week viewers of NFL football are sometimes confused about why certain types of calls occur more one week versus another. This inconsistentcy certainly could be a function of luck combined with sloppiness by the players, but it also could have to do with biases by referee crews towards calling or not calling certain penalty types. Perhaps some referee crews will throw the flag for any action approaching an illegal tackle while others may be compelled to let questionable tackles slide. After averaging all of the penalty types called for all of the data, the following bar graph can be constructed:
+Weekly viewers of NFL football are sometimes confused about why certain types of calls occur more frequently in one week versus another. This inconsistency certainly could be a function of luck combined with sloppiness by the players, but it also could have to do with biases by referee crews towards calling or not calling certain penalty types. Perhaps some referee crews will throw the flag (i.e. call a penalty) for any action nearing an illegal tackle while others may be compelled to let questionable actions slide. After averaging all of the penalty types called for all of the data, the following bar graph can be constructed:
 
 ```{r}
 library(dplyr)
@@ -148,14 +146,14 @@ for (penType in levels(df_ref$PenaltyType)){
 
 PenTypeCounts <- merge(PenTypeCounts, df_averagePenaltyTypeCalled, by = "PenaltyType")
 
-ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y = FreqTotal)) + geom_bar(stat = "identity") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1)) + xlab("Penalty Type") + ylab("Average Number called per Game") + ggtitle("Average Number of Each Penalty Type Called Per Game")+
+ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y = FreqTotal)) + geom_bar(stat = "identity") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1)) + xlab("Penalty Type") + ylab("Average Number Called Per Game") + ggtitle("Average Number of Each Penalty Type Called Per Game")+
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
        plot.title = element_text(hjust = 0.5, size = 18))
 
 ```
 
-Figure 1 shows how the average referee will make penalty calls in a game. Offside and Illegal Block are the most common penalties. This commonality is not suprising as running accross the line of scrimmage and blocking are two fundamental aspects of the game and thus are bound to be done incorrectly sometimes. Moreover, it is also not suprising particularly sloppy penalties such as Too Many Men on the Field, Illegal Formation and Delay of game are rare. Moreover, not every referee crew calls penalties at the exact rate highlighted in Figure 1. Figure 2 below shows the percentage of increase or decrease from these averages.
+Figure 1 shows how the average referee will make penalty calls in a game. Offside and Illegal Block are the most common penalties. This commonality is not suprising as running accross the line of scrimmage and blocking are two fundamental aspects of the game and thus are bound to be done incorrectly sometimes. Moreover, it is also not suprising that particularly sloppy penalties such as Too Many Men on the Field, Illegal Formation, and Delay of game are rare. Moreover, not every referee crew calls penalties at the exact rates highlighted in Figure 1. Figure 2 below shows the percentages of increases or decreases from these averages by referee crew.
 
 
 ```{r variances, anchor='figure', fig.width = 8, fig.height = 16, fig.cap="Figure 2: Percentage of Increase/Decrease from Average Penalty Type", fig.align= 'center'}
@@ -174,12 +172,12 @@ keep(refData, sure = TRUE)
 
 ```
 
-Figure 2 gives insight on tendencies of NFL referee crews towards calling or not calling certain penalties. For example, the crew of Bill Vinovich seems to call more penalties than average regardless of type. Moreover, Walt Anderson's crew seems to call less penalties than average regardless of type. Moreover, perhaps if Jerome Boger and his crew are officiating a game, it may be reasonable to expect an offensive game as he calls less Pass Interference, Illegal Formation and Illegal Block than average and more Roughing a Protected Player and Illegal Tackle than average.
+Figure 2 gives insight on tendencies of NFL referee crews towards calling or not calling certain types of penalties. For example, the crew of Bill Vinovich seems to call more penalties than average regardless of type. Additionally, Walt Anderson's crew seems to call less penalties than average regardless of type. Moreover, perhaps if Jerome Boger and his crew are officiating a game, it may be reasonable to expect a highly offensive game as he calls less Pass Interference, Illegal Formation and Illegal Block than average and more Roughing a Protected Player and Illegal Tackle than average.
 
 
 #### Analysis by Away / Home Team
 
-It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing at home. This difference can be a function of player familiarity with the field, away team pre-snap timing due to loudness of crowd, and referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against by penalty type are shown in the figure below:
+It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing in their home city. This difference can be a function of player familiarity with the field, miscommunication of the away team due to loudness of the home crowd, and/or referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against home teams and away teams by penalty type are shown in the figure below:
 
 ```{r, anchor='figure', fig.cap="Figure 3: Percentage of Penalties called Against Home and Away Teams by Penalty Type", fig.align= 'center', fig.width = 8}
 
@@ -213,7 +211,7 @@ ggplot(df_percentage, aes(x = reorder(Var1, - plotOrder), y = Freq, color = agai
 
 ```
 
-It is not at all suprising that a timing penalty such as delay of game is the most unfavorable towards the away team, but the higher degree of Illegal Tackle penalties is decently suprising. Illegal tackle is not based on familiarity with field or pre-snap timing which suggests that it may be a function of biased referee crews. Moreover, the percentage of penalties called against away split by referee is shown in the figure below:
+It is not at all suprising that Figure 3 shows a timing penalty (i.e. Delay of Game) is the most unfavorable towards the away team, since home crowds often increase their noise levels in an attempt to cause such penalties on the away team. However, the higher degree of Illegal Tackle penalties that we observe is decently suprising. An illegal tackle penalty is not based on familiarity with field or pre-snap timing which suggests that it may be a function of biased referee crews. Moreover, the percentage of penalties called against home teams and away teams by referee crew is shown in the figure below:
 
 ```{r ref_home_away, anchor='figure', fig.cap="Figure 4: Percentage of Penalties called Against Home and Away Teams by Referee", fig.align= 'center', fig.height= 7, fig.width = 7.75}
 
@@ -257,9 +255,11 @@ HA_byRef
 keep(HA_byRef, refData, sure = TRUE)
 ```
 
-Nearly every single referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below 50% against away. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. Moreover, in the end all of the referee penalty calling split is around 50% and is thus fairly even.
+Figure 4 shows that every referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below the 50% mark. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. However, as a whole all of the referee crews call home and away penalties at a rate around 50%, which suggests that penalty calling is quite fair since we would expect a slight trend toward more penalties called against away teams because of the aforementioned points.
 
 #### Analysis by Quarter
+
+We continue our exploratory data analysis by examining the distribution of penalties per game by quarter. Figure 5 shows this distribution at an aggregate level.
 ```{r penalties_by_q, anchor='figure', fig.cap="Figure 5: Penalties per Game by Quarter", fig.align= 'center'}
 df2 <- refData
 
@@ -288,7 +288,7 @@ ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
        plot.title = element_text(hjust = 0.5, size = 18))
 ```
 
-As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
+As seen in the above bar chart, most penalties are called in quarter 2 of games, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
 
 #### Analysis by Yardline
 ```{r anchor='figure', fig.cap="Figure 6: Penalties by Yard Line", fig.align= 'center'}
