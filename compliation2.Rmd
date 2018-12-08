@@ -36,39 +36,32 @@ Connor Daly: Connor was responsible for the distribution of penalties by quarter
 
 Jacob Klein: Jacob took full ownership of our interactive visualization component, which intends to highlight the various patterns and tendencies discussed below. Jacob created the graph in D3 and hosted it online, which we were then able to incorporate into this report.
 
-Patrick Lewis: Patrick was responsible for examining penalty distributions both by team and by referee. Patrick identified outliers and anomalies in the dataset, and further investigated into any oddities that were found.
+Patrick Lewis: Patrick was responsible for examining penalty distributions both by team and by referee. Patrick identified outliers and anomalies in the dataset, and further investigated by analyzing any oddities that were found.
 
-## Data Collection
+## Description of Data
 
 Data for this analysis was collected from the 2013-2014 NFL season through Week 9 of the 2018-2019 NFL season. It should be noted that this analysis was conducted during the 2018-2019 NFL season. Thus we have included all data available for the current season, but this season was excluded in any analyses in which penalties were compared over entire seasons, since all data for the entire season will not be available until February 2019.
 
-We downloaded play-by-play data from NFLsavant.com:
-http://www.nflsavant.com/about.php?fbclid=IwAR3c8IZngQd0eE_0jp3Z401TdZXSBa8E-qEAX8J7J4uC3--CisVr7ZQfjEQ
-From this site, we downloaded CSV files from seasons beginning in 2013 through 2018. These six CSV files begin with "pbp" and are located within the "/data" folder of this repository.
+We downloaded play-by-play data from [NFL Savant](http://www.nflsavant.com/about.php?fbclid=IwAR3c8IZngQd0eE_0jp3Z401TdZXSBa8E-qEAX8J7J4uC3--CisVr7ZQfjEQ). From this site, we downloaded CSV files from seasons beginning in 2013 through 2018. These six CSV files begin with "pbp" and are located within the "/data" folder of this repository. We then downloaded referee game data from [Pro-Football-Reference](https://www.pro-football-reference.com/officials/index.htm?fbclid=IwAR387n92do_jrcbwKAjKNR2Y_GSGpcnWMGbCbJ7Pwmx7AdpZQRSbmglfSfU).
 
-We then downloaded referee game data from Pro-Football-Reference:
-https://www.pro-football-reference.com/officials/index.htm?fbclid=IwAR387n92do_jrcbwKAjKNR2Y_GSGpcnWMGbCbJ7Pwmx7AdpZQRSbmglfSfU
+As noted in the Introduction, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we focused only on referees. We also excluded any referees who have not been employed by the NFL for a sufficient amount of time (and thus do not yield a sufficient number of data points); all referees in our dataset have reffed over 50 games between the 2013 NFL Season through week 9 of the 2018 NFL Season, inclusive.
 
-As noted above, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we focused only on referees. We also excluded any referees who have not been employed by the NFL for a sufficient amount of time (and thus do not yield sufficient data points); all referees in our dataset have reffed over 50 games over the span of the 2013 NFL Season through week 9 of the 2018 NFL Season.
+A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis. Also included in the this subfolder is a file called "abbreviations.csv". This file was used when joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
 
-A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis.
+## Analysis of Data Quality
 
-Also included in the "/data" subfolder is a file called "abbreviations.csv". This file is an aid in joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
-
-## Data Quality
-
-As stated above, we have two sources for the data, NFL Savant and Pro-Football-Reference. While Pro-Football-Reference had no missing values and no trends suggesting that any part of the data could be incorrect, the NFL Savant data is somewhat problematic. For example, before removing data points with an undefinied Penalty Team, some of the values in the  "PenaltyType" column are nonsenical:
+As stated above, we have two sources for the data, NFL Savant and Pro-Football-Reference. While Pro-Football-Reference had neither missing values nor any trends suggesting that part of the data could be incorrect, the data from NFL Savant is somewhat problematic, as some values are nonsensical. For example, some entries in the "PenaltyType" column of the dataset hold the following values:
 
 * "YAC 14.  A FLAG WAS THROWN"
 * "BUT OFFICIALS HUDDLED AND DID NOT CALL A PENALTY."
 * "CENTER-41-J.WINCHESTER"
 
-None of these statements can be considered valid penalty types. After manually checking the espn.com logged play-by-play gamecast in the games that contained these data points, it can be seen that the data was scraped from espn.com. It seems that irregular text that contain a key word such as "Flag" or "Penalty" as can be seen above, will throw off the scraping algorithm. However, despite these small hiccups, the data is mostly sensical.
+None of these statements can be considered valid penalty types. After manually checking against the [ESPN](http://www.espn.com/nfl/scoreboard) logged play-by-play data in the games that contained these data values, it appears as though the data on NFL Savant was actually scraped from ESPN, as all values match, even such nonsensical values. It seems that text which includes certain words such as "Flag" or "Penalty" (as is the case in the three examples above), throws off the scraping algorithm. However, despite these small hiccups, the dataset as a whole is sensical, and we ignore any nonsensical values in our analyses.
 
-Moreover, after the data from Pro-Football-Focus and NFL Savant are merged, there are a decent percentage of missing values in the "Referee", "Home", and "Away" columns. This is due to the fact that some games in the NFL Savant play-by-play data set were reffed by referee crews who have not officiated 50 or more games over the 2013 NFL Season - 2018 NFL Season Week 9. Since NFL Savant data does not include any information on referee, home team, or away team, this data must be merged over from Pro-Football-Focus. Even though these games will be undefined for a few columns, It was deemed ideal to keep the data from them as it can be used to have more a complete analysis of other columns such as "PenaltyType" and "PenaltyYards".
+Moreover, after the data from Pro-Football-Focus and NFL Savant are merged, there are decent percentages of missing values in the `Referee`, `Home`, and `Away` columns. This is due to the fact that some games in the NFL Savant play-by-play dataset were reffed by referee crews who have not officiated 50 or more games during the 2013 NFL Season through 2018 NFL Season Week 9, which is the range of data in which we are interested. Since NFL Savant data does not include any information on referees, home teams, or away teams, this data must be merged over from Pro-Football-Reference. Although these games will consequently have undefined values for a few columns, it was ideal to keep the data from such observations so that we could have a more complete analysis of other columns such as `PenaltyType` and `PenaltyYards`.
 
-
-## Data Processing
+## Main Analysis
+#### Data Processing
 
 To simplify the data, penalty types are grouped together with a universal grouping term. Moreover, some terms accounted for less than 1% of the data after the grouping took place (Fair Catch Interference, Inelgible Player Downfield, Illegal Action to Block a Field Goal, Illegal Bat, Illegal Forward Pass, Illegal Kickoff, Illegal Player Out of Bounds, Intentional Grounding, Invalid Fair Catch Signal and Tripping) and were grouped again into the "Other" category.  Here is a table highlighting how each penalty type was grouped:
 
@@ -97,7 +90,7 @@ Additionally, due to teams moving cities as well as general inconsistency of abb
 | Rams | LA  | LAR |
 | Rams | STL | LAR |
 
-## Analysis by Penalty Type
+#### Analysis by Penalty Type
 
 Week-to-week viewers of NFL football are sometimes confused about why certain types of calls occur more one week versus another. This inconsistentcy certainly could be a function of luck combined with sloppiness by the players, but it also could have to do with biases by referee crews towards calling or not calling certain penalty types. Perhaps some referee crews will throw the flag for any action approaching an illegal tackle while others may be compelled to let questionable tackles slide. After averaging all of the penalty types called for all of the data, the following bar graph can be constructed:
 
@@ -184,7 +177,7 @@ keep(refData, sure = TRUE)
 Figure 2 gives insight on tendencies of NFL referee crews towards calling or not calling certain penalties. For example, the crew of Bill Vinovich seems to call more penalties than average regardless of type. Moreover, Walt Anderson's crew seems to call less penalties than average regardless of type. Moreover, perhaps if Jerome Boger and his crew are officiating a game, it may be reasonable to expect an offensive game as he calls less Pass Interference, Illegal Formation and Illegal Block than average and more Roughing a Protected Player and Illegal Tackle than average.
 
 
-## Analysis by Away / Home Team
+#### Analysis by Away / Home Team
 
 It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing at home. This difference can be a function of player familiarity with the field, away team pre-snap timing due to loudness of crowd, and referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against by penalty type are shown in the figure below:
 
@@ -266,7 +259,7 @@ keep(HA_byRef, refData, sure = TRUE)
 
 Nearly every single referee crew calls more penalties against the away team as compared to the home team. The crew led by John Hussey is the only exception and is just below 50% against away. Pete Morelli's crew has the highest percentage of penalty calls against the away team with nearly 55%. Moreover, in the end all of the referee penalty calling split is around 50% and is thus fairly even.
 
-## Analysis by Quarter
+#### Analysis by Quarter
 ```{r penalties_by_q, anchor='figure', fig.cap="Figure 5: Penalties per Game by Quarter", fig.align= 'center'}
 df2 <- refData
 
@@ -297,7 +290,7 @@ ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
 
 As seen in the bar chart, most penalties are called in quarter 2, but it is in the same range as quarters 3 and quarter 4. What is perhaps the most surprising is the relatively low number of penalties that are called in the first quarter of games. A few different hypotheses for this pattern come to mind: perhaps pace of play is significantly slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties. Let us compare this trend by comparing the distribution of penalties by quarter for offense teams versus that for defense teams.
 
-## Analysis by Yardline
+#### Analysis by Yardline
 ```{r anchor='figure', fig.cap="Figure 6: Penalties by Yard Line", fig.align= 'center'}
 df <- refData
 
@@ -359,7 +352,7 @@ To further explore referee crew tendencies, we examined the number of penalties 
 
 Although many technological advances are constantly being made in just about all sports (such as the inclusion of instant replay), referees are an inherently human part of football. Thus, at the core of the exploratory data analysis conducted in this project lies human behavior. No two humans see things the exact same way, which serves as some justification for the inconsistencies we see in referee penalty calls, despite much effort taken by the NFL to define the constitution of particular penalties in objective terms. Therefore, we must err on the side when identifying anomalies or inconsistencies in our dataset. For example, while there is no denying from `r figr('variances', prefix=TRUE)` that Bill Vinovich's referee crew calls more penalties per game for all penalty types than does the average referee crew, this does not necessarily imply that Bill Vinovich's crew is biased. In fact, we should be more concerned with inconsistencies within a particular referee crew's penalty calls than we should be concerned with inconsistencies between distinct referee crews.
 
-```{r fig.align='right'}
+```{r fig.align='center'}
 htmltools::includeHTML("./docs/index.html")
 ```
 
