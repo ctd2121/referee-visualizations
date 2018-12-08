@@ -352,7 +352,7 @@ To further explore referee crew tendencies, we examined the number of penalties 
 
 Although many technological advances are constantly being made in just about all sports (such as the inclusion of instant replay), referees are an inherently human part of football. Thus, at the core of the exploratory data analysis conducted in this project lies human behavior. No two humans see things the exact same way, which serves as some justification for the inconsistencies we see in referee penalty calls, despite much effort taken by the NFL to define the constitution of particular penalties in objective terms. Therefore, we must err on the side when identifying anomalies or inconsistencies in our dataset. For example, while there is no denying from `r figr('variances', prefix=TRUE)` that Bill Vinovich's referee crew calls more penalties per game for all penalty types than does the average referee crew, this does not necessarily imply that Bill Vinovich's crew is biased. In fact, we should be more concerned with inconsistencies within a particular referee crew's penalty calls than we should be concerned with inconsistencies between distinct referee crews.
 
-```{r fig.align='center'}
+```{r fig.align='right'}
 htmltools::includeHTML("./docs/index.html")
 ```
 
