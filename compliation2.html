@@ -373,23 +373,35 @@ Figure 7: Penalty Yard Line Averages by Referee
 		<meta charset="utf-8">
 		<title>NFL Interactive Component</title>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css" rel="stylesheet" />
 	</head>
 
 	<body>
-
-		<div id="interactive-component" style="width: 600px">
-		
+		<div id="ic-description" style="width: 600px">	
 			<h3>EDAV Project: Interactive Component</h3>
-		
 			<p>
 				This webpage is to act as an interactive application that users can
 				use to learn about how penalities within the NFL occur at different frequencies depending on field position.
 			</p>
-
 			<p>
-				To get started place your mouse on a 10 yard zone of the field.  
+				To get started place your mouse on a 10 yard zone of the field. You can also toggle by offensive/defensive penalties.
 			</p>
-		
+			<div class="switch-toggle switch-3 switch-candy">
+				<input id="offense-toggle" name="state-d" type="radio" checked=""/>
+				<label for="offense-toggle">Offense</label>
+			  
+				<input id="default-toggle" name="state-d" type="radio" checked="checked" />
+				<label for="default-toggle">Default</label>
+			  
+				<input id="defense-toggle" name="state-d" type="radio" />
+				<label for="defense-toggle">Defense</label>
+			  
+				<a></a>
+			</div>
+			<br>
+		</div>
+
+		<div id="interactive-component">
 		</div>
 	  
 		<script type="text/javascript">
@@ -410,12 +422,11 @@ Figure 7: Penalty Yard Line Averages by Referee
 			fieldMarkings = [-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
 			//loading data
-			var data_url = "https://raw.githubusercontent.com/JacobK-/referee-visualizations/8aa62034d4c94ac36b67013a2dca93dbfced5cae/data/ic_data.csv?token=AKcaw1spn1MTfvJx9ecKE8Lhiu6BgZCoks5cEWI_wA%3D%3D"
+			var data_url = "https://raw.githubusercontent.com/JacobK-/referee-visualizations/master/data/ic_data.csv?token=AKcawwh9tL3X6uUAx4joVb70Urngbgveks5cFrFKwA%3D%3D"
 			var penalty_data
 			d3.csv(data_url, function(error, data) {
 				if (error) throw error;
 				penalty_data = data;
-				console.log(penalty_data)
 				//data_order 	(delay of game (0), illegal block, illegal formation, illegal tackle, illegal use of hands,
 				//				offside, pass interference (6), roughing a protected player, too many men, unsportsmanlike conduct, other (10))
 
@@ -438,12 +449,12 @@ Figure 7: Penalty Yard Line Averages by Referee
 						.on("mouseover", function(d) {
 							d3.select(this)
 							.attr("fill","green")
-							refresh(d)
+							refresh(d, teamType)
 						})
 						.on("mouseout", function(d) {		
 							d3.select(this)
 							.attr("fill","lightgreen")
-							refresh(-1)
+							refresh(-1, teamType)
 						})
 					}
 				});
@@ -490,6 +501,7 @@ Figure 7: Penalty Yard Line Averages by Referee
     		var width = w - margin.left - margin.right;
     		var height = h - margin.top - margin.bottom;
 			var num_games = 1205;
+			var teamType = "Default"
 			// A formatter for counts.
 			var formatCount = d3.format(",.2f");
 
@@ -558,21 +570,28 @@ Figure 7: Penalty Yard Line Averages by Referee
 			/*
 			* Adding refresh method to reload the subsetted data
 			*/
-			function refresh(filter){
-
+			function refresh(filter, teamType){
 				var values = [];
 				for (i = 0; i<penalty_data.length; i++) {
 					if (filter == -1) {
-						values.push(penalty_data[i]['PenaltyType'])
+						if (teamType == 'Default' || penalty_data[i]['TeamType'] == teamType) {
+							values.push(penalty_data[i]['PenaltyType'])
+						}
 					}
 					else if (penalty_data[i]['YardLine'] >= filter && penalty_data[i]['YardLine'] < filter + 10) {
-						values.push(penalty_data[i]['PenaltyType'])
+						if (teamType == 'Default' || penalty_data[i]['TeamType'] == teamType) {
+							values.push(penalty_data[i]['PenaltyType'])
+						}
+					}
+				}
+				if (teamType == "Defense") { //prevent graph shifting
+					if (filter == 0 || filter == 90) {
+						values.push("Delay of Game")
 					}
 				}
 				var data = d3.histogram()
 				.thresholds(d3.range(0, width, (width - 0) / 11))
 				(values.map(x));
-
 				// Reset y domain using new data
 				var yMax = d3.max(data, function(d){return d.length});
 				var yMin = d3.min(data, function(d){return d.length});
@@ -585,7 +604,11 @@ Figure 7: Penalty Yard Line Averages by Referee
 
 				bar.transition()
 					.duration(1000)
-					.attr("transform", function(d) { return "translate(" + 1.01*d.x0 + "," + y(d.length) + ")"; });
+					.attr("transform", function(d) {
+						var x_val = d[0] || 0;
+						
+						return "translate(" + 1.01*d.x0 + "," + y(d.length) + ")";
+					});
 
 				bar.select("rect")
 					.transition()
@@ -599,6 +622,12 @@ Figure 7: Penalty Yard Line Averages by Referee
 					.text(function(d) { return formatCount(d.length/num_games); });
 
 			}
+
+				d3.select("#offense-toggle").on("click", function() { teamType = 'Offense'; refresh(-1,'Offense') } )
+				d3.select("#defense-toggle").on("click", function() { teamType = 'Defense'; refresh(-1,'Defense') } )
+				d3.select("#default-toggle").on("click", function() { teamType = 'Default'; refresh(-1,'Default') } )
+
+
 		});
 			
 		</script>

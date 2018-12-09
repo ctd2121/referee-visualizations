@@ -305,7 +305,7 @@ One of the things that we were most interested in looking at is how officiating 
 
 So to reiterate, what we are looking for is a referee that is calls an irregular number of calls against a team, when compared to the rest of the referees.
 
-```{r ref_by_team, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
+```{r ref_by_team, anchor='figure', fig.cap="Figure 6: Penalties by Referee by Team", fig.align= 'center'}
 #looking at the penalties by team by ref
 #group by team
 penRef<-refData %>%
@@ -359,7 +359,7 @@ In the figure above we picture the distributions of how teams are officiated aga
 What we are particularily interested in for the above chart is the outliers. Having a referee act normally is not something notable, but if we are able to identify the abnormal patterns in officiating then this may be valuable. As such, we have narrowed down the above boxplot to only those that have outliers.
 
 
-```{ref_tendencies, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
+```{r ref_tendencies, anchor='figure', fig.cap="Figure 7: Penalties by Referee by Team: Outliers", fig.align= 'center'}
 #We only want the teams that have ooutliers from above, as we are most interested in these referees.
 
 BUFPenRef<-penRef[penRef[,1]=='BUF',]
@@ -400,7 +400,7 @@ Remember that this boxplot is the same as above, only with the axis switched and
 
 
 We were also interested in doing an extention of looking at referee by team, and decided to look at whether certain referees had a large difference in the number of penalties that they called on a team at away vs. the number of penalties that they called at home. We used a similar methodology to the previous section. First we determined the average number of penalties called when the team was away, and the average number of penalties called when the team was home. We then took the difference between means (Average # Away - Average # Home). This gave us a distribution of the differences bewteen home penalties and away penalties for each referee and each team. Because there is a huge number of categorical varaibles, we decided to focus on only the referee that has the highest variance between home and away: Brad Allen. You can see the average difference between away and home penalties by team for Brad Allen below.
-```{ref_tendencies, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
+```{r ref_home_away_team, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
 refData$AgainstAway = refData$PenaltyTeam == refData$Away
 
 penRefTemp<-refData %>%
@@ -473,7 +473,7 @@ The outliers for Brad Allen include Tennessee (TEN), Los Angeles Charges (LAC), 
 #### Analysis by Yardline
 
 Next we examine the distribution of penalties that are called by location on the field. Figure 6 below shows this distribution, where a value of 0 means the penalty was called as close as possible to the offensive team's own endzone, and a value of 100 means the penalty was called as close as possible to the attacking endzone (which is the offensive team's target).
-```{r anchor='figure', fig.cap="Figure 6: Penalties by Yard Line", fig.align= 'center'}
+```{r anchor='figure', fig.cap="Figure 9: Penalties by Yard Line", fig.align= 'center'}
 df <- refData
 
 #Get mean and standard deviation for YardLine
@@ -498,7 +498,7 @@ ggplot(df, aes(x=YardLine)) +
 
 The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they do closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)? Figure 7 below yields insight into this question.
 
-```{r ref_yardlines, anchor='figure', fig.cap="Figure 7: Penalty Yard Line Averages by Referee", fig.align= 'center'}
+```{r ref_yardlines, anchor='figure', fig.cap="Figure 10: Penalty Yard Line Averages by Referee", fig.align= 'center'}
 library(tidyverse)
 df_subset <- df %>%
   group_by(Referee) %>%
