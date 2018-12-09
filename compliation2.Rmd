@@ -400,7 +400,7 @@ Remember that this boxplot is the same as above, only with the axis switched and
 
 
 We were also interested in doing an extention of looking at referee by team, and decided to look at whether certain referees had a large difference in the number of penalties that they called on a team at away vs. the number of penalties that they called at home. We used a similar methodology to the previous section. First we determined the average number of penalties called when the team was away, and the average number of penalties called when the team was home. We then took the difference between means (Average # Away - Average # Home). This gave us a distribution of the differences bewteen home penalties and away penalties for each referee and each team. Because there is a huge number of categorical varaibles, we decided to focus on only the referee that has the highest variance between home and away: Brad Allen. You can see the average difference between away and home penalties by team for Brad Allen below.
-```{r ref_home_away_team, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
+```{r ref_home_away_team, anchor='figure', fig.cap="Figure 8: Penalties by Referee by Team: Home and Away", fig.align= 'center'}
 refData$AgainstAway = refData$PenaltyTeam == refData$Away
 
 penRefTemp<-refData %>%
@@ -434,7 +434,6 @@ NoGamesRefHome<-merge(x=NoGamesRefHome,y=NoGamesRefAway)
 colnames(NoGamesRefHome)<-c('Referee','Team','HomeGames','AwayGames')
 NoGamesRefHome$HomeAwayRatio <-NoGamesRefHome$HomeGames / NoGamesRefHome$AwayGames
 colnames(penRefTemp)<-c('Referee','Team','AgainstAway','HomePenalties')
-penRefTemp[penRefTemp$AgainstAway == FALSE,]
 HomePens<-penRefTemp[penRefTemp$AgainstAway == FALSE,]
 HomePens<-HomePens[complete.cases(HomePens),]
 NoGamesRefHome <- merge(x=NoGamesRefHome,y=HomePens)
@@ -464,7 +463,8 @@ Brad<-'Brad Allen'
 BradData<-NoGamesRefHome[NoGamesRefHome[,2]==Brad,]
 BradData$Outlier<-(BradData$Team == 'TEN' | BradData$Team == 'DET' | BradData$Team == 'LAC')
 
-ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Away and Home for Each Team')+ylab('Average Penalties Away - Average Penalties Home')+theme_light()+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)
+ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Away and Home for Each Team')+ylab('Average Penalties Away minus Average Penalties Home')+theme_light()+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)
+
 ```
 Note that in order to determine outliers, we created a distriubtion for each team, based on the difference between away and home penalties. If the referee was an outlier for that particular team, that is represented in the above chart. So the outliers are not representative of being outliers for the particular referee, but instead outliers the team.
 
