@@ -149,10 +149,8 @@ for (penType in levels(df_ref$PenaltyType)){
 
 PenTypeCounts <- merge(PenTypeCounts, df_averagePenaltyTypeCalled, by = "PenaltyType")
 
-ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y = FreqTotal)) + geom_bar(stat = "identity") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1)) + xlab("Penalty Type") + ylab("Average Number Called Per Game") + ggtitle("Average Number of Each Penalty Type Called Per Game")+
-  theme(axis.title.x = element_text(size = 16),
-       axis.title.y = element_text(size = 16),
-       plot.title = element_text(hjust = 0.5, size = 18))+theme_light()
+ggplot(df_averagePenaltyTypeCalled, aes(x = reorder(PenaltyType, - FreqTotal), y = FreqTotal)) + geom_bar(stat = "identity") + theme(plot.title = element_text(hjust = 0.5), axis.text.x  = element_text(angle=45, hjust = 1)) + xlab("Penalty Type") + ylab("Average Number Called Per Game") + ggtitle("Average Number of Each Penalty Type Called Per Game")+theme(axis.title.x = element_text(size = 16),axis.title.y = element_text(size = 16), plot.title = element_text(hjust = 0.5, size = 18))
+
 
 ```
 
@@ -168,7 +166,7 @@ ggplot(PenTypeCounts, aes(x=reorder(PenaltyType, FreqTotal), y=Freq, fill=FreqTy
   geom_bar(stat="identity",position="identity")+ ggtitle("Percentage of Increase/Decrease from Average Penalty Type Called") + scale_fill_manual(values = c("green","red"), guide = FALSE)+ facet_wrap(~Referee, nrow = 8, ncol = 2, scales = 'free_x') + coord_flip() + geom_hline(yintercept=0) + theme(panel.spacing = unit(1, "lines")) +xlab('') + ylab('Percentage of Divergence from Average')  + scale_y_continuous(labels = percent, limits=c(-0.6,0.6)) +
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
-       plot.title = element_text(hjust = 0.5, size = 18))+theme_light()
+       plot.title = element_text(hjust = 0.5, size = 18))
 
 keep(refData, sure = TRUE)
 
@@ -210,7 +208,7 @@ df_percentage$plotOrder = df_percentage[df_percentage$against == "Away",]$Freq
 ggplot(df_percentage, aes(x = reorder(Var1, - plotOrder), y = Freq, color = against)) + geom_hline(yintercept=0.5) + geom_point(stat = "identity", size = 3) + xlab("Penalty Type") + ggtitle("% of Penalties Called Against the Home/Away Teams by Penalty Type") + ylab("Percentage of Penalties called Against") + scale_y_continuous(labels = percent, limits=c(0.4,0.6)) + labs(color = "Perentage Called Against") +coord_flip()+
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
-       plot.title = element_text(hjust = 0.5, size = 18))+theme_light()
+       plot.title = element_text(hjust = 0.5, size = 18))
 
 ```
 
@@ -253,7 +251,7 @@ df_percentage[df_percentage$Var1 == "AVERAGE",]$avg = TRUE
 HA_byRef <- ggplot(df_percentage, aes(x = reorder(Var1, -plotOrder), y = Freq, color = against)) + geom_hline(yintercept=0.5)  + geom_point(stat = "identity", size = 3, aes(shape = avg)) + xlab("Penalty Type") + ylab("Percentage of Penalties Against") + ggtitle("% of Penalties called Against Home/Away Teams by Referee") + scale_y_continuous(labels = percent, limits=c(0.4,0.6)) + labs(color = "Percentage Called Against") +coord_flip() + guides(shape = FALSE)+
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
-       plot.title = element_text(hjust = 0.5, size = 18))+theme_light()
+       plot.title = element_text(hjust = 0.5, size = 18))
 HA_byRef
 keep(HA_byRef, refData, sure = TRUE)
 ```
@@ -288,7 +286,7 @@ ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
   ylab("Count Per Game") +
   theme(axis.title.x = element_text(size = 16),
        axis.title.y = element_text(size = 16),
-       plot.title = element_text(hjust = 0.5, size = 18))+theme_light()
+       plot.title = element_text(hjust = 0.5, size = 18))
 ```
 
 As seen in the above bar chart, most penalties are called in quarters two and four of games. A high frequency of penalties in quarter four is not too surprising, because the game is nearing conclusion at this point and we expect that teams have a higher risk tolerance as they attempt to end the game as the victor. On the other hand, the fact that quarter two has the highest penalty frequency is somewhat surprising because one would intuitively think that the game progresses fluidly at this point, having already played a full quarter and thus teams have gotten over any states of hesitancy or jitters. It is also surprising that quarter one yields the lowest penalty frequency, but we can pose a couple different hypotheses for this pattern: perhaps pace of play is legitimately slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties.
@@ -493,7 +491,7 @@ ggplot(df, aes(x=YardLine)) +
         axis.title.y = element_text(size = 16)) +
   ggtitle("Penalties by Yard Line") +
   xlab("Yard Line") +
-  ylab("Density")+theme_light()
+  ylab("Density")+
 ```
 
 The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they do closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)? Figure 7 below yields insight into this question.
@@ -515,12 +513,24 @@ ggplot(df_subset, aes(x=mean_yard_line,
   theme(plot.title = element_text(hjust = 0.5, size = 18),
       axis.title.x = element_text(size = 16),
       axis.title.y = element_text(size = 16)) +
-  geom_vline(xintercept = mean(df$YardLine,))+theme_light()
+  geom_vline(xintercept = mean(df$YardLine,))
 ```
 
 This graph shows the distribution of average yard lines at which penalties were called by each referee. The graph shows that the average yard line of penalties for all referees is between 46 and 49. This finding is consistent with the results from the histogram of `r figr('ref_yardlines', prefix=TRUE)`, where we see that penalties are more frequently called at yard lines closer to the offensive team's end zone than to the defensive team's end zone.
 
 Although all referees show the same general pattern in the average area where they called the penalties (that being between yard lines 46 and 49), there are three outliers, relatively speaking. In general, the referee crews of Bill Vinovich and Craig Wrolstad call penalties at greater yard lines than does the average crew, while Gene Steratore's referee crew calls penalties at lower yard lines than most.
+
+## Interactive Component
+
+This component is to act as an interactive application that users can use to learn about how penalities within the NFL occur at different frequencies depending on field position.
+To get started place your mouse on a 10 yard zone of the field. One can also use the toggle below to filter by offensive/defensive penalties.
+
+The entire Interactive Component was coded using Native JavaScript and D3.js v4. This component can also be viewed as a standalone page by going to bit.ly/edavnfl
+
+```{r fig.align='right'}
+htmltools::includeHTML("./docs/index_report.html")
+```
+
 
 ## Executive Summary
 
@@ -533,18 +543,6 @@ After some other high-level exploration of penalty distributions, we began compa
 To further explore referee crew tendencies, we examined the number of penalties called per game by each referee crew against each team. r figr('ref_tendencies', prefix=TRUE)` displays the notable findings from this exploration. This visualization of box plots only includes teams that have one or more outliers in their distributions. It is interesting to see which referee crews are determined as outliers in the graph, and it is particularly noteworthy when referee crews are deemed outliers in the left tail of the distribution for some team(s), while deemed outliers in the right tail of the distribution for other team(s). For example, on average we see that John Hussey's referee crew calls significantly fewer penalties per game against the New England patriots (NE), while the crew calls significantly more penalties per game against the Atlanta Falcons (ATL) and the New York Giants (NYG).
 
 Although many technological advances are constantly being made in just about all sports (such as the inclusion of instant replay), referees are an inherently human part of football. Thus, at the core of the exploratory data analysis conducted in this project lies human behavior. No two humans see things the exact same way, which serves as some justification for the inconsistencies we see in referee penalty calls, despite much effort taken by the NFL to define the constitution of particular penalties in objective terms. Therefore, we must err on the side when identifying anomalies or inconsistencies in our dataset. For example, while there is no denying from `r figr('variances', prefix=TRUE)` that Bill Vinovich's referee crew calls more penalties per game for all penalty types than does the average referee crew, this does not necessarily imply that Bill Vinovich's crew is biased. In fact, we should be more concerned with inconsistencies within a particular referee crew's penalty calls than we should be concerned with inconsistencies between distinct referee crews.
-
-
-## Interactive Component
-
-This component is to act as an interactive application that users can use to learn about how penalities within the NFL occur at different frequencies depending on field position.
-To get started place your mouse on a 10 yard zone of the field. One can also use the toggle below to filter by offensive/defensive penalties.
-
-The entire Interactive Component was coded using Native JavaScript and D3.js v4. This component can also be viewed as a standalone page by going to bit.ly/edavnfl
-
-```{r fig.align='right'}
-htmltools::includeHTML("./docs/index_report.html")
-```
 
 
 ## Conclusion & Future Directions
