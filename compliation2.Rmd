@@ -400,7 +400,7 @@ Remember that this boxplot is the same as above, only with the axis switched and
 
 
 We were also interested in doing an extention of looking at referee by team, and decided to look at whether certain referees had a large difference in the number of penalties that they called on a team at away vs. the number of penalties that they called at home. We used a similar methodology to the previous section. First we determined the average number of penalties called when the team was away, and the average number of penalties called when the team was home. We then took the difference between means (Average # Away - Average # Home). This gave us a distribution of the differences bewteen home penalties and away penalties for each referee and each team. Because there is a huge number of categorical varaibles, we decided to focus on only the referee that has the highest variance between home and away: Brad Allen. You can see the average difference between away and home penalties by team for Brad Allen below.
-```{r}
+```{ref_tendencies, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
 refData$AgainstAway = refData$PenaltyTeam == refData$Away
 
 penRefTemp<-refData %>%
@@ -434,14 +434,10 @@ NoGamesRefHome<-merge(x=NoGamesRefHome,y=NoGamesRefAway)
 colnames(NoGamesRefHome)<-c('Referee','Team','HomeGames','AwayGames')
 NoGamesRefHome$HomeAwayRatio <-NoGamesRefHome$HomeGames / NoGamesRefHome$AwayGames
 colnames(penRefTemp)<-c('Referee','Team','AgainstAway','HomePenalties')
-
 penRefTemp[penRefTemp$AgainstAway == FALSE,]
-
 HomePens<-penRefTemp[penRefTemp$AgainstAway == FALSE,]
 HomePens<-HomePens[complete.cases(HomePens),]
-
 NoGamesRefHome <- merge(x=NoGamesRefHome,y=HomePens)
-
 NoGamesRefHome = subset(NoGamesRefHome, select = -c(AgainstAway))
 
 ## At this point we need to calculate the number of penalties given to each away team and each home team, and combine those with our 'running' dataset
@@ -449,12 +445,9 @@ colnames(penRefTemp)<-c('Referee','Team','AgainstAway','AwayPenalties')
 
 AwayPens<-penRefTemp[penRefTemp$AgainstAway == TRUE,]
 AwayPens <-AwayPens[complete.cases(AwayPens),]
-
 AwayPens = subset(AwayPens, select = -c(AgainstAway))
-
 NoGamesRefHome <- merge(x=NoGamesRefHome,y=AwayPens)
 NoGamesRefHome$ActualRatio <-NoGamesRefHome$HomePenalties / NoGamesRefHome$AwayPenalties
-
 NoGamesRefHome$AvgAway <- NoGamesRefHome$AwayPenalties/NoGamesRefHome$AwayGames
 NoGamesRefHome$AvgHome <- NoGamesRefHome$HomePenalties/NoGamesRefHome$HomeGames
 NoGamesRefHome$Difference <- NoGamesRefHome$AvgAway - NoGamesRefHome$AvgHome
@@ -546,13 +539,16 @@ htmltools::includeHTML("./docs/index.html")
 ```
 
 
-## Conclusion
+## Conclusion & Future Directions
 
 While many unique insights were uncovered through this analysis, there remain a few interesting directions in which we can proceed to perform further exploratory data analysis.
 
 As noted above, home teams are penalized significantly less often than are away teams. This is a trend we found consistent across all teams, just about all referees, and across all quarters of games. Most NFL seasons, some games (generally less than three or four) are played at neutral fields, either in another country or at a pre-determined destination in the United States (as is the case for the Super Bowl). A limitation with this potential exploration include a significantly smaller sample size than what was used in this analysis. Moreover, we would need to be careful to filter out games that are technically at a neutral location but where one team still has locational advantage (for example if the New York Jets played the Minnesota Vikings at the New York Giants stadium). In carrying out such an analysis, we suspect that this would yield a much more balanced distribution of penalties called against opposing teams when neither team is playing at their home field.
 
-One challenge that we faced was vizualizing data for so many categorical variables. Having 32 teams and 16 referee crews, means that visualizing anything beyond a boxplot becomes very difficult (although one thing that we learned through completing our project is just how useful the boxplot can be). One future path that we would like to take would be to create additional dynamic visualizations for our data. Allowing users to slice the data on different variables would allow us to show more, without overloading the report with charts. Alternatively, instead of looking at all teams and referees, in the future we could narrow our analysis to look at specific teams or specific referee crews. This would allow us to focus our analysis on what we are particularily interested in.
+One challenge that we faced was vizualizing data for so many categorical variables. This is the case in the 'Analysis by Referee by Team' analysis above. Having 32 teams and 16 referee crews, means that visualizing anything beyond a boxplot becomes very difficult (although one thing that we learned through completing our project is just how useful the boxplot can be). One future path that we would like to take would be to create additional dynamic visualizations for our data. Allowing users to slice the data on different variables would allow us to show more, without overloading the report with charts. Alternatively, instead of looking at all teams and referees, in the future we could narrow our analysis to look at specific teams or specific referee crews. This would allow us to focus our analysis on what we are particularily interested in.
 
 Another challenge that we came accross is the lack of long term data. As mentioned above, having more years of data would allow us to complete a more in depth analysis, particularily on the NFL playoffs and the super bowl. 
 
+A final future deliverable that we would like to work on is an analysis of the number of penalties called at different differences in the score. Essentially the underlying question that we would look to be answering is if there are more penalties called in a close game or not. Unfortunately our data did not contain the score at each point in the game, so we would have to look elsewhere for the data in order to complete the analysis. Once merging this new data with our current data, we would be able to determine whether more penalties are called in a close game.
+
+Difficulty in preprocessing. 
