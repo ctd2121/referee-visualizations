@@ -384,13 +384,12 @@ subsetTeams <- rbind(subsetTeams,ATLPenRef)
 fill <- "#4271AE"
 line <- "#1F3552"
 
-
 subsetTeams %>%
   group_by(PenaltyTeam) %>%
-  mutate(outlier = ifelse(is_outlier(PenPerGame), Referee,NA)) %>%
+  mutate(outlier = ifelse(is_outlier(PenPerGame), as.character(Referee),NA)) %>%
   ggplot(., aes(x = factor(PenaltyTeam), y = PenPerGame)) +
     geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,outlier.size = 1.5) +
-    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=4)+
+    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+
     theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties by Referee, by Team')
 
 ```
