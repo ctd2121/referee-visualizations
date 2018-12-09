@@ -351,7 +351,9 @@ penRef<-merge(x=penRef,y=temP)
 fill <- "#4271AE"
 line <- "#1F3552"
 
-ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5,outlier.size = 2)+coord_flip()+ggtitle("Average Number of Penalties Given by Referee By Team")+xlab('Team')+ylab('Average Number of Penalties given By Referee')+theme_light()
+ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5,outlier.size = 2)+coord_flip()+ggtitle("Average Number of Penalties Given by Referee By Team")+xlab('Team')+ylab('Average Number of Penalties given By Referee')+theme(axis.title.x = element_text(size = 16),
+       axis.title.y = element_text(size = 16),
+       plot.title = element_text(hjust = 0.5, size = 18))
 
 ```
 
@@ -389,8 +391,9 @@ subsetTeams %>%
   mutate(outlier = ifelse(is_outlier(PenPerGame), as.character(Referee),NA)) %>%
   ggplot(., aes(x = factor(PenaltyTeam), y = PenPerGame)) +
     geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,outlier.size = 1.5) +
-    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+
-    theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties Given by Referee By Team: Outliers')
+    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties Given by Referee By Team: Outliers')+theme(axis.title.x = element_text(size = 13),
+       axis.title.y = element_text(size = 13),
+       plot.title = element_text(hjust = 0.5, size = 15))
 
 ```
 
@@ -463,7 +466,9 @@ Brad<-'Brad Allen'
 BradData<-NoGamesRefHome[NoGamesRefHome[,2]==Brad,]
 BradData$Outlier<-(BradData$Team == 'TEN' | BradData$Team == 'DET' | BradData$Team == 'LAC')
 
-ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Away and Home for Each Team')+ylab('Average Penalties Away minus Average Penalties Home')+theme_light()+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)
+ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Away and Home for Each Team')+ylab('Average Penalties Away minus Average Penalties Home')+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)+theme(axis.title.x = element_text(size = 16),
+       axis.title.y = element_text(size = 16),
+       plot.title = element_text(hjust = 0.5, size = 15))
 
 ```
 Note that in order to determine outliers, we created a distriubtion for each team, based on the difference between away and home penalties. If the referee was an outlier for that particular team, that is represented in the above chart. So the outliers are not representative of being outliers for the particular referee, but instead outliers the team.
