@@ -491,7 +491,7 @@ ggplot(df, aes(x=YardLine)) +
         axis.title.y = element_text(size = 16)) +
   ggtitle("Penalties by Yard Line") +
   xlab("Yard Line") +
-  ylab("Density")+
+  ylab("Density")
 ```
 
 The black line in the above graph represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own end zone than they do closer to the defensive team's end zone, or the target. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)? Figure 7 below yields insight into this question.
