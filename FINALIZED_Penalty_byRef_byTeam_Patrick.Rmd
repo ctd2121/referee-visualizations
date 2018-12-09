@@ -80,6 +80,7 @@ ggplot(penRef, aes(x=reorder(Referee,PenPerGame),y=PenPerGame))+geom_point()+coo
 
 
 
+
 ```
 The above is data prep.
 
@@ -141,6 +142,8 @@ ggplot(SEAPenRef,aes(x=PenPerGame))+geom_histogram(binwidth =1)+theme_light()+yl
 
 fill <- "#4271AE"
 line <- "#1F3552"
+
+subsetTeams
 
 subsetTeams %>%
   group_by(PenaltyTeam) %>%
