@@ -3,8 +3,8 @@ title: "Examination of Referee Tendencies and Biases in the National Football Le
 author: "Thompson Bliss, Connor Daly, Jacob Klein, Patrick Lewis"
 date: "December 2018"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +38,7 @@ Connor Daly: Connor was responsible for the distribution of penalties by quarter
 
 Jacob Klein: Jacob took full ownership of our interactive visualization component, which intends to highlight the various patterns and tendencies discussed below. Jacob created the graph in D3 and hosted it online, which we were then able to incorporate into this report.
 
-Patrick Lewis: Patrick was responsible for examining penalty distributions both by team and by referee. Patrick identified outliers and anomalies in the dataset, and further investigated by analyzing any oddities that were found.
+Patrick Lewis: Patrick was responsible for examining penalty distributions both by team and by referee. Patrick identified outliers and anomalies in the dataset, and further investigated by analyzing any oddities that were found, including looking at the distributions by team and by referee for penalties called at home and at away.
 
 ## Description of Data
 
@@ -359,7 +359,7 @@ In the figure above we picture the distributions of how teams are officiated aga
 What we are particularily interested in for the above chart is the outliers. Having a referee act normally is not something notable, but if we are able to identify the abnormal patterns in officiating then this may be valuable. As such, we have narrowed down the above boxplot to only those that have outliers.
 
 
-```{r}
+```{ref_tendencies, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
 #We only want the teams that have ooutliers from above, as we are most interested in these referees.
 
 BUFPenRef<-penRef[penRef[,1]=='BUF',]
@@ -471,10 +471,11 @@ Brad<-'Brad Allen'
 BradData<-NoGamesRefHome[NoGamesRefHome[,2]==Brad,]
 BradData$Outlier<-(BradData$Team == 'TEN' | BradData$Team == 'DET' | BradData$Team == 'LAC')
 
-ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Home and Away for Each Team')+ylab('Average # of Penalties Called Home - Average # of Penalties Called at Away')+theme_light()+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)
+ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+theme_light()+ggtitle('Brad Allen: Difference between Away and Home for Each Team')+ylab('Average Penalties Away - Average Penalties Home')+theme_light()+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)
 ```
-Note that in order to determine outliers, we created a distriubtion for each team
+Note that in order to determine outliers, we created a distriubtion for each team, based on the difference between away and home penalties. If the referee was an outlier for that particular team, that is represented in the above chart. So the outliers are not representative of being outliers for the particular referee, but instead outliers the team.
 
+The outliers for Brad Allen include Tennessee (TEN), Los Angeles Charges (LAC), and Detroit (DET). Remember that the chart can be interpreseted as we move to the right, the referee calls more away penalties than he does home penalties. We can see that on average, Brad Allen's crew calls more penalties on away teams than home teams, but there are several outliers where they call much more penalties against the home team than the away team. This kind of analysis is useful to dig into more detail about the habits of each referee, and further analysis for whether being the away team is a disadvantage in terms of penalties. 
 
 #### Analysis by Yardline
 
@@ -536,7 +537,7 @@ Once we combined the various data sources into a single dataset, we began explor
 
 After some other high-level exploration of penalty distributions, we began comparing penalties called by referee. One of the most important findings of our analysis is conveyed in `r figr('ref_home_away', prefix=TRUE)`. This graph shows the percentage of penalties that each referee crew calls against the home team (i.e. the team playing at its home stadium) versus that of the away team (i.e. the team playing on the road). We observe that all referee crews, except for that of John Hussey, call more penalties against the away team than they do against the home team. Although it cannot be stated with certainty whether referee crews are biased in favor of home teams or whether teams legitimately commit penalties at a lower rate when they are playing at home, this is certainly a notable insight that prompts discussion and further analysis.
 
-To further explore referee crew tendencies, we examined the number of penalties called per game by each referee crew against each team. r figr('ref_tendencies', prefix=TRUE)` displays the notable findings from this exploration. This visualization of box plots only includes teams that have one or more outliers in their distributions. It is interesting to see which referee crews are determined as outliers in the graph, and it is particularly noteworthy when referee crews are deemed outliers in the left tail of the distribution for some team(s), while deemed outliers in the right tail of the distribution for other team(s). For example, on average we see that John Hussey's referee crew calls significantly fewer penalties per game against the New England patriots (NE), while the crew calls significantly more penalties per game against the Atlanta Falcons (ATL) and the New York Giants (NYG).
+To further explore referee crew tendencies, we examined the number of penalties called per game by each referee crew against each team. `r figr('ref_tendencies', prefix=TRUE)` displays the notable findings from this exploration. This visualization of box plots only includes teams that have one or more outliers in their distributions. It is interesting to see which referee crews are determined as outliers in the graph, and it is particularly noteworthy when referee crews are deemed outliers in the left tail of the distribution for some team(s), while deemed outliers in the right tail of the distribution for other team(s). For example, on average we see that John Hussey's referee crew calls significantly fewer penalties per game against the New England patriots (NE), while the crew calls significantly more penalties per game against the Atlanta Falcons (ATL) and the New York Giants (NYG).
 
 Although many technological advances are constantly being made in just about all sports (such as the inclusion of instant replay), referees are an inherently human part of football. Thus, at the core of the exploratory data analysis conducted in this project lies human behavior. No two humans see things the exact same way, which serves as some justification for the inconsistencies we see in referee penalty calls, despite much effort taken by the NFL to define the constitution of particular penalties in objective terms. Therefore, we must err on the side when identifying anomalies or inconsistencies in our dataset. For example, while there is no denying from `r figr('variances', prefix=TRUE)` that Bill Vinovich's referee crew calls more penalties per game for all penalty types than does the average referee crew, this does not necessarily imply that Bill Vinovich's crew is biased. In fact, we should be more concerned with inconsistencies within a particular referee crew's penalty calls than we should be concerned with inconsistencies between distinct referee crews.
 
@@ -550,4 +551,7 @@ htmltools::includeHTML("./docs/index.html")
 While many unique insights were uncovered through this analysis, there remain a few interesting directions in which we can proceed to perform further exploratory data analysis.
 
 As noted above, home teams are penalized significantly less often than are away teams. This is a trend we found consistent across all teams, just about all referees, and across all quarters of games. Most NFL seasons, some games (generally less than three or four) are played at neutral fields, either in another country or at a pre-determined destination in the United States (as is the case for the Super Bowl). A limitation with this potential exploration include a significantly smaller sample size than what was used in this analysis. Moreover, we would need to be careful to filter out games that are technically at a neutral location but where one team still has locational advantage (for example if the New York Jets played the Minnesota Vikings at the New York Giants stadium). In carrying out such an analysis, we suspect that this would yield a much more balanced distribution of penalties called against opposing teams when neither team is playing at their home field.
+
+One challenge that we faced was vizualizing data for so many categorical variables. Having 32 teams and 16 referee crews, means that visualizing anything beyond a boxplot becomes very difficult. One future path that we would like to take would be to create additional dynamic visualizations for our data. Allowing users to slice the data on different variables would allow us to show more, without overloading the report with charts. Alternatively, instead of looking at all teams and referees, in the future we could narrow out analysis to look at 
+
 
