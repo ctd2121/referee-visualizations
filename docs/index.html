@@ -4,12 +4,11 @@
 		<meta charset="utf-8">
 		<title>NFL Interactive Component</title>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
-
 	</head>
 
 	<body>
 
-		<div style="width: 600px">
+		<div id="interactive-component" style="width: 600px">
 		
 			<h3>EDAV Project: Interactive Component</h3>
 		
@@ -35,7 +34,7 @@
 			var markSize = 35;
 
 			//    Create SVG element		
-			var svg = d3.select("body").append("svg")
+			var svg = d3.select("#interactive-component").append("svg")
 				.attr("width", w)
 				.attr("height", h)
 			
@@ -47,7 +46,7 @@
 			d3.csv(data_url, function(error, data) {
 				if (error) throw error;
 				penalty_data = data;
-
+				console.log(penalty_data)
 				//data_order 	(delay of game (0), illegal block, illegal formation, illegal tackle, illegal use of hands,
 				//				offside, pass interference (6), roughing a protected player, too many men, unsportsmanlike conduct, other (10))
 
@@ -114,7 +113,6 @@
 
 			//HISTOGRAM BELOW// // based on: http://bl.ocks.org/nnattawat/8916402
 			var color = "steelblue";
-			// var values = d3.range(1000).map(d3.randomNormal(20, 5));
 			var values = [];
 			for (i = 0; i<penalty_data.length; i++) {
 				values.push(penalty_data[i]['PenaltyType'])
@@ -126,17 +124,11 @@
 			// A formatter for counts.
 			var formatCount = d3.format(",.2f");
 
-
-			/**var x = d3.scaleLinear()
-				.domain([0, 11])
-				.range([0, width]);
-			**/
 			var x = d3.scaleBand()
 				.domain(['Delay of Game', 'Illegal Block', 'Illegal Formation', 'Illegal Tackle', 'Illegal Use of Hands', 'Offside',
 					'Pass Interference', 'Roughing a Protected Player', 'Too Many Men on the Field', 'Unsportsmanlike Conduct', 'Other'])
 				.range([0, width])
 				.paddingInner(0.05);
-			// Generate a histogram using twenty uniformly-spaced bins.
 			var data = d3.histogram()
 			.thresholds(d3.range(0, width, (width - 0) / 11))
 			(values.map(x));
@@ -154,7 +146,7 @@
 			var xAxis = d3.axisBottom()
 				.scale(x);
 
-			var svg2 = d3.select("body").append("svg")
+			var svg2 = d3.select("#interactive-component").append("svg")
 				.attr("width", width + margin.left + margin.right)
     			.attr("height", height + margin.top + margin.bottom)
   			.append("g")
@@ -194,19 +186,8 @@
 				.attr("x",width/2).attr("y",-15).attr("text-anchor", "middle").style("font-size", "30px")
 
 
-			/*var svg3 = d3.select("body").append("svg")
-				.attr("width", 600 + margin.left + margin.right)
-    			.attr("height", 100 + margin.top + margin.bottom)
-  			.append("g")
-    			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-			svg3.append("rect")
-				.attr("width", "100%")
-				.attr("height", "100%")
-				.attr("fill", "lightgrey")
-				.style("opacity","0.7");
-			*/
 			/*
-			* Adding refresh method to reload new data
+			* Adding refresh method to reload the subsetted data
 			*/
 			function refresh(filter){
 
@@ -249,12 +230,6 @@
 					.text(function(d) { return formatCount(d.length/num_games); });
 
 			}
-
-			/**Calling refresh repeatedly.
-			setInterval(function() {
-			var values = d3.range(1000).map(d3.randomNormal(20, 5));
-			refresh(values);
-			}, 2000); **/
 		});
 			
 		</script>
