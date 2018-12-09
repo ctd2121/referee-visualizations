@@ -1,8 +1,9 @@
 ---
 title: "Penalties_byTeam_byReferee"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 latex_engine: xelatex
-
 ---
   
 ```{r setup, include=FALSE}
@@ -75,6 +76,10 @@ penRef<-merge(x=penRef,y=temP)
 penRef<-penRef[complete.cases(penRef),]
 
 ggplot(penRef, aes(x=reorder(Referee,PenPerGame),y=PenPerGame))+geom_point()+coord_flip()+ggtitle("Average Number of Penalties By Team, by Referee")+xlab('Ref Name')+ylab('Average No. Penalties by Team')+theme_bw()+geom_hline(yintercept=(mean(penRef$PenPerGame)),color='Red',alpha=0.4)
+
+
+
+
 ```
 The above is data prep.
 
@@ -110,27 +115,18 @@ is_outlier <- function(x) {
 
 
 
-```{r fig.width=10}
+```{r fig.width=9}
 #Buffalo (BUF), Oakland (OAK), Detroit (DET), NYG seem like interesting ones
 #SEA,KC, ATL,ARI,NE
 
-
 BUFPenRef<-penRef[penRef[,1]=='BUF',]
-
 OAKPenRef<-penRef[penRef[,1]=='OAK',]
-
 NYGPenRef<-penRef[penRef[,1]=='NYG',]
-
 DETPenRef<-penRef[penRef[,1]=='DET',]
-
 NEPenRef<-penRef[penRef[,1]=='NE',]
-
 KCPenRef<-penRef[penRef[,1]=='KC',]
-
 ATLPenRef<-penRef[penRef[,1]=='ATL',]
-
 ARIPenRef<-penRef[penRef[,1]=='ARI',]
-
 SEAPenRef<-penRef[penRef[,1]=='SEA',]
 
 subsetTeams <- rbind(KCPenRef,OAKPenRef)
@@ -141,6 +137,8 @@ subsetTeams <- rbind(subsetTeams,ARIPenRef)
 subsetTeams <- rbind(subsetTeams,SEAPenRef)
 subsetTeams <- rbind(subsetTeams,ATLPenRef)
 
+ggplot(SEAPenRef,aes(x=PenPerGame))+geom_histogram(binwidth =1)+theme_light()+ylab('Count')+xlab('Penalties Per Game')+ggtitle('Seattle: Average Penalties Called Per Game')
+
 fill <- "#4271AE"
 line <- "#1F3552"
 
@@ -148,8 +146,8 @@ subsetTeams %>%
   group_by(PenaltyTeam) %>%
   mutate(outlier = ifelse(is_outlier(PenPerGame), Referee,NA)) %>%
   ggplot(., aes(x = factor(PenaltyTeam), y = PenPerGame)) +
-    geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18) +
-    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+
+    geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,outlier.size = 1.5) +
+    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=4)+
     theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties by Referee, by Team')
 
 ```

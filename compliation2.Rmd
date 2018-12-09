@@ -1,8 +1,10 @@
 ---
 title: "Examination of Referee Tendencies and Biases in the National Football League"
-author: Thompson Bliss, Connor Daly, Jacob Klein, Patrick Lewis
-date: December 2018
-output: html_document
+author: "Thompson Bliss, Connor Daly, Jacob Klein, Patrick Lewis"
+date: "December 2018"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -291,6 +293,110 @@ ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
 As seen in the above bar chart, most penalties are called in quarters two and four of games. A high frequency of penalties in quarter four is not too surprising, because the game is nearing conclusion at this point and we expect that teams have a higher risk tolerance as they attempt to end the game as the victor. On the other hand, the fact that quarter two has the highest penalty frequency is somewhat surprising because one would intuitively think that the game progresses fluidly at this point, having already played a full quarter and thus teams have gotten over any states of hesitancy or jitters. It is also surprising that quarter one yields the lowest penalty frequency, but we can pose a couple different hypotheses for this pattern: perhaps pace of play is legitimately slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties.
 
 Also included in this graph is the penalty frequency for overtime periods. Although it appears that penalties are called less in overtime than they are in normal quarters, it is important to note that overtime generally does not last the full length of a regular quarter, because it concludes once there is a leading team after each team has gotten the chance to possess the ball. The game ends in a tie if there is no leader after a full period of overtime (which is equal to the length of a regular quarter), but this occurs quite infrequently. Thus, the frequency of penalties called in overtime seems proportional to that of quarters one through four when we account for duration of play.
+
+####Analysis by Referee by Team
+
+One of the things that we were most interested in looking at is how officiating differs by which referee is reffing which team. Note that the named referee in this analysis is the head referee, but is actually representing the entire crew of 7 officials. To complete our analysis, we needed to somehow combine two categorical variables, the particular referee crew and the particular team that they were reffing, in order to visualize the differences in officiating. To do this we completed the following methodology:
+
+1. Calculate the average number of penalties that each referee crew calls on each team
+2. Group the averages that we calculated in step one by team
+3. Create a distribution for each team
+4. Look for 'outlier referees' within distribution
+
+So to reiterate, what we are looking for is a referee that is calls an irregular number of calls against a team, when compared to the rest of the referees.
+
+```{r ref_by_team, anchor='figure', fig.cap="Figure 6: Penalties per Game by Quarter", fig.align= 'center'}
+#looking at the penalties by team by ref
+#group by team
+penRef<-refData %>%
+  group_by(Referee,PenaltyTeam) %>%
+  summarize(n=n())
+penRef<-penRef[complete.cases(penRef),]
+
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 1.5 * IQR(x) | x > quantile(x, 0.75) + 1.5 * IQR(x))
+}
+
+colnames(penRef)<-c("Referee","PenaltyTeam","NPenalties")
+
+#So we have the number of penalties by ref...now we just need the number of games each ref did for each team
+#The best way that we can do this is through using two DPYLR statements, one to get unique games by team, then to summarize by ref by team
+
+refDataTemp<-refData
+NoGamesRef<- refDataTemp %>%
+  filter(!is.na(PenaltyTeam)) %>% 
+  group_by(Referee,PenaltyTeam,GameDate) %>%
+  summarize(Unique_Elements = n_distinct(GameDate))
+
+NoGamesRef <- NoGamesRef%>%
+  group_by(Referee,PenaltyTeam) %>%
+  summarize(n=n())
+
+colnames(NoGamesRef)<-c("Referee","PenaltyTeam","NGames")
+
+penRef<-merge(x=penRef,y=NoGamesRef)
+penRef$PenPerGame <- penRef$NPenalties/penRef$NGames
+
+#It is easiest to pre-calculate the median and append this to the dataframe for each ref, although this is definitely not following the best practices for data
+temP<-penRef[,c(2,5)]
+
+temP<-temP%>%
+  group_by(PenaltyTeam)%>%
+  dplyr::summarize(Median = median(PenPerGame))
+
+penRef<-merge(x=penRef,y=temP)
+
+#Now the chart
+fill <- "#4271AE"
+line <- "#1F3552"
+
+ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5,outlier.size = 2)+coord_flip()+ggtitle("Number of Penalties Given by Referee By Team")+xlab('Team')+ylab('Average Number of Penalties given By Referee')+theme_light()
+
+```
+
+In the figure above we picture the distributions of how teams are officiated against on average. We can see that Seattle has the highest median penalties called against on average, while New England has the lowest. Remember that each one of the outliers pictured above represent a particular referee crew that calls an abnormal number of penalties against a team. This will become more clear in the chart below. Note that the variance of the average number of penalties against varies greatly. For example Buffalo (BUF) has a huge range of how referees treat them, which most referees treat Carolina (CAR) very similarily.
+
+What we are particularily interested in for the above chart is the outliers. Having a referee act normally is not something notable, but if we are able to identify the abnormal patterns in officiating then this may be valuable. As such, we have narrowed down the above boxplot to only those that have outliers.
+
+
+```{r}
+#We only want the teams that have ooutliers from above, as we are most interested in these referees.
+
+BUFPenRef<-penRef[penRef[,1]=='BUF',]
+OAKPenRef<-penRef[penRef[,1]=='OAK',]
+NYGPenRef<-penRef[penRef[,1]=='NYG',]
+DETPenRef<-penRef[penRef[,1]=='DET',]
+NEPenRef<-penRef[penRef[,1]=='NE',]
+KCPenRef<-penRef[penRef[,1]=='KC',]
+ATLPenRef<-penRef[penRef[,1]=='ATL',]
+ARIPenRef<-penRef[penRef[,1]=='ARI',]
+SEAPenRef<-penRef[penRef[,1]=='SEA',]
+
+subsetTeams <- rbind(KCPenRef,OAKPenRef)
+subsetTeams <- rbind(subsetTeams,NYGPenRef)
+subsetTeams <- rbind(subsetTeams,DETPenRef)
+subsetTeams <- rbind(subsetTeams,NEPenRef)
+subsetTeams <- rbind(subsetTeams,ARIPenRef)
+subsetTeams <- rbind(subsetTeams,SEAPenRef)
+subsetTeams <- rbind(subsetTeams,ATLPenRef)
+
+fill <- "#4271AE"
+line <- "#1F3552"
+
+
+subsetTeams %>%
+  group_by(PenaltyTeam) %>%
+  mutate(outlier = ifelse(is_outlier(PenPerGame), Referee,NA)) %>%
+  ggplot(., aes(x = factor(PenaltyTeam), y = PenPerGame)) +
+    geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,outlier.size = 1.5) +
+    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=4)+
+    theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties by Referee, by Team')
+
+```
+
+Remember that this boxplot is the same as above, only with the axis switched and data subsetted to only include those teams with outliers. We have labelled exactly which referee crews are the outliers for each team. One potential explanation for these deviances could be that particular referee crews are more likely to call specific penalties (for example, pass interference), and some teams are more likely to commit certain penalties, then there could be outliers created.  Another explanation is that there could be a limited number of data points for particular referee/team combos. This will be remedied as there is additional data added over the years. There are a few crews that appear on the chart multiple times. For example  John Hussey's crew appears three times on the chart, appearing to call more penalties on the New York Giants (NYG) and Atlanta (ATL), while less penalties on New England (NE). This could mean that the crew is slightly less consistent in their penalty calling.
+
+#### Analysis by Referee by Team - Home vs Away
 
 #### Analysis by Yardline
 

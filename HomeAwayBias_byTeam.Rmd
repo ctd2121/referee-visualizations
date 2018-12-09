@@ -130,17 +130,17 @@ NoGamesRefHome %>%
   ggplot(., aes(x = factor(Team), y = Difference)) +
    geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18) +
     geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+
-    theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties by Referee, by Team')
+    theme_light()+xlab('Team')+ylab('Average Penalty per Game by Referee')+ggtitle('Average Number of Penalties by Referee, by Team')+coord_flip()
 
 Ed<-'Ed Hochuli'
 Brad<-'Brad Allen'
 
 EdData<-NoGamesRefHome[NoGamesRefHome[,2] == Ed,]
-EdData$Outlier<-(EdData$Difference<=-5)
+EdData$Outlier<-(EdData$Team == 'LAR' | EdData$Team == 'CLE')
 EdData
 
 BradData<-NoGamesRefHome[NoGamesRefHome[,2]==Brad,]
-BradData$Outlier<-(BradData$Difference<=-6 | BradData$Difference>=6.2)
+BradData$Outlier<-(BradData$Team == 'TEN' | BradData$Team == 'DET' | BradData$Team == 'LAC')
 BradData
 
 ggplot(EdData,aes(x=reorder(Team,Difference),y=Difference,color=Outlier))+geom_point(size=2.5)+coord_flip()+ggtitle('Ed Hochuli: Difference between Home and Away for Each Team')+ylab('Average # of Penalties Called Home - Average # of Penalties Called at Away')+theme_light()+xlab('Team')
