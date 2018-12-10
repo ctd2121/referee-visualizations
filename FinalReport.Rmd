@@ -55,7 +55,7 @@ We downloaded play-by-play data from [NFL Savant](http://www.nflsavant.com/about
 
 As noted in the Introduction, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we grouped officials by head referee. We also excluded any referee crews that have not been active in the NFL for a sufficient amount of time (and thus do not yield a sufficient number of data points); all referee crews in our dataset have reffed over 50 games between the 2013 NFL Season through week 9 of the 2018 NFL Season, inclusive.
 
-A CSV file is available in the "/data" subfolder of the repository for each of the 17 referees we included in the analysis. Additionally, there is a CSV file containing play-by-play data for seasons 2013 - 2018. Also included in this subfolder is a file called "abbreviations.csv" which was used when joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
+A CSV file is available in the "/data" subfolder of the repository for each of the 17 referees we included in the analysis. Also included in this subfolder is a file called "abbreviations.csv" which was used when joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
 
 
 ## Section 3: Analysis of Data Quality
