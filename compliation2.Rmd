@@ -111,7 +111,7 @@ library(scales)
 library(gdata)
 library(tidyr)
 library(kfigr)
-
+library(ggrepel)
 
 refData = read.csv('./data/df_ref.csv')
 
@@ -402,7 +402,7 @@ subsetTeams %>%
   mutate(outlier = ifelse(is_outlier(PenPerGame), as.character(Referee),NA)) %>%
   ggplot(., aes(x = factor(PenaltyTeam), y = PenPerGame)) +
     geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,outlier.size = 1.5) +
-    geom_text(aes(label = outlier), na.rm = TRUE, hjust = 1.1, size=2)+xlab('Team')+ylab('Average Penalties Per Game by Referee')+ggtitle('Avg Number of Penalties by Referee by Team: Outliers')+theme_ref
+    geom_text_repel(aes(label = outlier), na.rm = TRUE, vjust = 1.4, size=2.5)+xlab('Team')+ylab('Average Penalties Per Game by Referee')+ggtitle('Avg Number of Penalties by Referee by Team: Outliers')+theme_ref
 
 ```
 
