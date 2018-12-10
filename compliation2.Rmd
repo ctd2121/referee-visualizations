@@ -29,11 +29,11 @@ p.caption {
 
 ## Section 1: Introduction
 
-The National Football League (NFL) is arguably the most popular professional sports association in the United States. The NFL consists of 32 teams, and each team plays 16 games per season (this report does not include playoff games, for which only a select subset of the 32 teams qualify). Every game is divided into four quarters of length 15 minutes (and sometimes a variable length overtime period), and each team's objective is to score more points than its opponent by bringing the ball into the opposing team's endzone or kicking the ball through the goal posts. Seven points are awarded for touchdowns (bringing the ball into the opposing team's endzone). Three points are awarded for field goals. Detailed knowledge of football scoring is not particularly crucial for the purposes of comprehending the following analysis, but it may prove helpful in specific discussions.
+The National Football League (NFL) is arguably the most popular professional sports association in the United States. The NFL consists of 32 teams, and each team plays 16 games per season (this report does not include playoff games, for which only a select subset of the 32 teams qualify). Every game is divided into four quarters of length 15 minutes (and sometimes a variable length overtime period), and each team's objective is to score more points than its opponent by bringing the ball into the opposing team's endzone or kicking the ball through the goal posts. Seven points are awarded for touchdowns (bringing the ball into the opposing team's endzone), and three points are awarded for field goals. Detailed knowledge of football scoring is not particularly crucial for the purposes of comprehending the following analysis, but it may prove helpful in specific discussions.
 
 Every NFL game is watched by a group of seven officials, which includes one referee, one umpire, and five line judges. These officials are responsible for watching and arbitrating plays, while deeming any illegal plays as penalties. When a penalty is called by an official, the penalty is enforced by moving the penalized team in its adverse direction by a pre-specified number of yards - common penalties are enforced with 5, 10, and 15 yard setbacks.
 
-The purpose of this project is to examine tendencies, biases, and patterns in penalties called by NFL officials. It is important to note that we consider calls made by entire referee crews in this analysis and not just the single head official. However, for simplicity, we label the various referee crews by the name of their head referee.
+The purpose of this project is to examine tendencies, biases, and patterns in penalties called by NFL officials. It is important to note that we consider calls made by entire referee crews in this analysis and not just the single head official. However, for simplicity, we label the various referee crews by the names of their head referees.
 
 Our interest in sports, and our interest in the NFL specifically, prompted us to research this topic. From an NFL fan and spectator perspective, an increasing amount of attention has been placed on the calling of penalties over the course of the past five or so years. There is often contention regarding how one should actually define a specific penalty, how to determine if one occurred, and why some teams appear to be penalized significantly more or less often than others. Penalties can dramatically alter the flow and outcomes of games, so ensuring that penalties are called fairly and consistently is crucial to maintaining integrity of the game.
 
@@ -53,9 +53,9 @@ Data for this analysis was collected from the 2013-2014 NFL season through Week 
 
 We downloaded play-by-play data from [NFL Savant](http://www.nflsavant.com/about.php?fbclid=IwAR3c8IZngQd0eE_0jp3Z401TdZXSBa8E-qEAX8J7J4uC3--CisVr7ZQfjEQ). From this site, we downloaded CSV files from seasons beginning in 2013 through 2018. These six CSV files begin with "pbp" and are located within the "/data" folder of [this repository](https://github.com/JacobK-/referee-visualizations). We then downloaded referee game data from [Pro-Football-Reference](https://www.pro-football-reference.com/officials/index.htm?fbclid=IwAR387n92do_jrcbwKAjKNR2Y_GSGpcnWMGbCbJ7Pwmx7AdpZQRSbmglfSfU).
 
-As noted in the Introduction, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we grouped by head referee. We also excluded any referee crews that have not been active in the NFL for a sufficient amount of time (and thus do not yield a sufficient number of data points); all referees in our dataset have reffed over 50 games between the 2013 NFL Season through week 9 of the 2018 NFL Season, inclusive.
+As noted in the Introduction, because there are hundreds of referees, linesmen, side judges, and line judges employed by the NFL, for the purposes of this analysis we grouped officials by head referee. We also excluded any referee crews that have not been active in the NFL for a sufficient amount of time (and thus do not yield a sufficient number of data points); all referees in our dataset have reffed over 50 games between the 2013 NFL Season through week 9 of the 2018 NFL Season, inclusive.
 
-A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis. Also included in the this subfolder is a file called "abbreviations.csv". This file was used when joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
+A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis. Also included in this subfolder is a file called "abbreviations.csv". This file was used when joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
 
 ## Section 3: Analysis of Data Quality
 
@@ -72,7 +72,7 @@ Moreover, after the data from Pro-Football-Focus and NFL Savant are merged, ther
 ## Section 4: Main Analysis
 ### Section 4A:  Data Processing
 
-Many of the penalty types in our dataset are quite similar in nature (e.g. Offensive Offside and Defensive Offside), so we grouped such instances using universal grouping terms, as shown in the below table. Moreover, certain penalty type groupings accounted for less than 1% of all observations even after the groupings were applied, and such groups were then grouped again into the `Other` category. The table below highlights all groupings we used for our analysis.
+Many of the penalty types in our dataset are quite similar in nature (e.g. `Offensive Offside` and `Defensive Offside`), so we grouped such instances using universal grouping terms, as shown in the below table. Moreover, certain penalty type groupings accounted for less than 1% of all observations even after the groupings were applied, and such groups were then grouped again into the `Other` category. The table below highlights all groupings we used for our analysis.
 
 | Grouping Term    |  Penalty Types Included |
 |------------------|----------------------------------------------------------------------------------------|
@@ -88,7 +88,7 @@ Many of the penalty types in our dataset are quite similar in nature (e.g. Offen
 |<strong> Unsportsmanlike Conduct </strong>| Disqualification, Personal Foul, Taunting, Unnecessary Roughness, Unsportsmanlike Conduct |
 | <strong> Other </strong> | <strong>Fair Catch Interference:</strong> Fair Catch Interference, Interference with Opportunity to Catch, Kick Catch Interference<br><br><strong>Illegal Action to Block a Field Goal:</strong> Leaping, Leverage<br><br><strong>Illegal Bat:</strong> Illegal Bat<br><br><strong>Illegal Forward Pass:</strong> Illegal Forward Pass<br><br><strong>Illegal Kickoff:</strong> Kickoff Out of Bounds, Short Free Kick<br><br><strong>Illegal Player Out of Bounds:</strong> Illegal Touch Kick, Illegal Touch Pass, Player Out of Bounds on Kick, Player Out of Bounds on Punt <br><br><strong>Ineligible Player Downfield:</strong> Ineligible Downfield Kick, Ineligible Downfield Pass<br><br><strong>Intentional Grounding:</strong> Intentional Grounding<br><br><strong>Invalid Fair Catch Signal:</strong> Invalid Fair Catch Signal<br><br><strong>Tripping:</strong> Tripping |
 <br>
-Additionally, due to some teams moving cities as well as general inconsistency of abbreviations accross the data, the following abbreviations were updated to ensure consistency in the dataset:
+Additionally, due to some teams moving cities as well as general inconsistency of abbreviations across the data, the following abbreviations were updated to ensure consistency in the dataset:
 
 | Team Name |  Old Abbreviation   |  New Abbreviation |
 |-----------|----------------------|-------------------|
@@ -99,7 +99,7 @@ Additionally, due to some teams moving cities as well as general inconsistency o
 
 ###Section 4B: Analysis by Penalty Type
 
-Weekly viewers of NFL football are sometimes confused about why certain types of calls occur more frequently in one week versus another. This inconsistency certainly could be a function of luck combined with sloppiness by the players, but it also could have to do with biases by referee crews towards calling or not calling certain penalty types. Perhaps some referee crews will throw the flag (i.e. call a penalty) for any action nearing an illegal tackle while others may be compelled to let questionable actions slide and go uncalled. After averaging all of the penalty types called for all of the data, the following bar graph can be constructed:
+Weekly viewers of NFL football are sometimes confused about why certain types of calls (i.e. penalties) occur more frequently in one week versus another. This inconsistency certainly could be a function of luck combined with sloppiness by the players, but it also could have to do with biases by referee crews towards calling or not calling certain penalty types. Perhaps some referee crews will throw the flag (i.e. call a penalty) for any action nearing an illegal tackle while others may be compelled to let questionable actions slide and go uncalled. After averaging all of the penalty types called for all of the data, the following bar graph can be constructed:
 
 ```{r}
 
@@ -188,9 +188,9 @@ Figure 2 gives insight on tendencies of NFL referee crews towards calling or not
 
 ###Section 4C: Analysis by Away / Home Team
 
-It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing in their home city. This difference can be a function of player familiarity with the field, miscommunication between members of the away team due to loudness of the home crowd, and/or referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentage of calls against home teams and away teams by penalty type are shown in the Figure 3 below:
+It is common to think that teams are often called for more penalties when they are playing on the road as opposed to playing in their home city. This difference can be a function of player familiarity with the field, miscommunication between members of the away team due to loudness of the home crowd, and/or referee crew reaction to crowd noise encouraging or discouraging certain calls. The percentages of calls against home teams and away teams by penalty type are shown in Figure 3 below:
 
-```{r, anchor='Figure', fig.cap="Figure 3: Percentage of Penalties Called Against the Home/Away Teams by Penalty Type", fig.align= 'center', fig.width = 8}
+```{r, anchor='Figure', fig.cap="Figure 3: Percentages of Penalties Called Against the Home/Away Teams by Penalty Type", fig.align= 'center', fig.width = 8}
 
 #Reading in data
 df_ref <- refData
@@ -219,9 +219,9 @@ ggplot(df_percentage, aes(x = reorder(Var1, - plotOrder), y = Freq, color = agai
 
 ```
 
-It is not at all suprising that Figure 3 shows that a timing penalty (i.e. `Delay of Game`) is the most unfavorable towards the away team, since home crowds often increase their noise levels in an attempt to cause such penalties on the away team. However, the higher degree of `Illegal Tackle` penalties that we observe is decently suprising. An illegal tackle penalty is not based on familiarity with field or pre-snap timing which suggests that it may be a function of referee crew response to crowd noise. Moreover, the percentage of penalties called against home teams and away teams by referee crew is shown in Figure 4 below:
+It is not at all suprising that Figure 3 shows that a timing penalty (i.e. `Delay of Game`) is the most unfavorable towards the away team, since home crowds often increase their noise levels in an attempt to cause such penalties on the away team. However, the higher degree of `Illegal Tackle` penalties that we observe is decently suprising. An illegal tackle penalty is not based on familiarity with field or pre-snap timing which suggests that it may be a function of referee crew responses to crowd noise. Moreover, the percentages of penalties called against home teams and away teams by referee crew is shown in Figure 4 below:
 
-```{r ref_home_away_1, anchor='Figure', fig.cap="Figure 4: Percentage of Penalties Called Against Home and Away Teams by Referee", fig.align= 'center', fig.height= 7, fig.width = 7.75}
+```{r ref_home_away_1, anchor='Figure', fig.cap="Figure 4: Percentages of Penalties Called Against Home and Away Teams by Referee", fig.align= 'center', fig.height= 7, fig.width = 7.75}
 
 rm(df_percentage)
 rm(df_percentage2)
@@ -289,29 +289,29 @@ levels(df_by_q$Quarter) <- c("Q1", "Q2", "Q3", "Q4", "Overtime")
 
 ggplot(df_by_q, aes(x = Quarter, y = adj_count, width = 0.8)) +
   geom_bar(stat = "identity", color = "black", fill = "red", alpha = 0.6) +
-  ggtitle("Penalties per Game by Quarter") +
+  ggtitle("Penalties Per Game by Quarter") +
   xlab("Quarter") +
   ylab("Count Per Game") +
   theme_ref
 
 ```
 
-As seen in Figure 5, most penalties are called in quarters two and four of games. A high frequency of penalties in quarter four is not too surprising, because the game is nearing conclusion at this point and we expect that teams have higher risk tolerances as they attempt to end the games as victors. On the other hand, the fact that quarter two has the highest penalty frequency is somewhat surprising because one would intuitively think that the game progresses fluidly at this point, having already played a full quarter and thus teams have gotten over any jitters or states of hesitancy. It is also surprising that quarter one yields the lowest penalty frequency, but we can pose a couple different hypotheses for this pattern: perhaps pace of play is legitimately slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties.
+As seen in Figure 5, most penalties are called in quarters two and four of games. A high frequency of penalties in quarter four is not too surprising, because the game is nearing conclusion at this point and we expect that teams have higher risk tolerances as they attempt to end the games as victors. On the other hand, the fact that quarter two has the highest penalty frequency is somewhat surprising because one would intuitively think that the game progresses fluidly at this point, having already played a full quarter and thus teams have gotten over any jitters or states of hesitancy. It is also surprising that quarter one yields the lowest penalty frequency, but we can pose a couple different hypotheses for this pattern: perhaps pace of play is slower in the first quarter than in the other three, or perhaps there is some inherent bias in referees not wanting to begin games by immediately calling penalties.
 
 Also included in this graph is the penalty frequency for overtime periods. Although it appears that penalties are called less frequently in overtime than in normal quarters, it is important to note that overtime generally does not last the full length of a regular quarter, because it concludes once there is a leading team after each team has had a chance to possess the ball. The game ends in a tie if there is no leader after a full period of overtime (which is equal to the length of a regular quarter), but this occurs quite infrequently. Thus, the frequency of penalties called in overtime seems proportional to that of quarters one through four when we account for duration of play.
 
 ### Section 4E: Analysis by Referee by Team
 
-A common question by a fan of the NFL, like any sport, is whether or not a specific referee crew is uneven against particular teams. To analyze this question, we needed to combine two categorical variables, those being the particular referee crew and the particular team that they were reffing, in order to visualize the differences in officiating. To do this we completed the following methodology:
+A common question by a fan of the NFL, like any sport, is whether or not a specific referee crew is unfair to particular teams. To analyze this question, we needed to combine two categorical variables, those being the particular referee crew and the particular team that the crew was reffing, in order to visualize the differences in officiating. To do this we completed the following methodology:
 
 1. Calculate the average number of penalties that each referee crew calls on each team
 2. Group the averages calculated in step 1 by team
 3. Create a distribution for each team
 4. Look for "outlier referees" within distribution
 
-Figure 6 shows box plots to show the different number of penalties each referee crew calls on average against particular teams.
+Figure 6 shows boxplots to show the different number of penalties each referee crew calls on average against particular teams.
 
-```{r ref_by_team, anchor='Figure', fig.cap="Figure 6: Average Number of Penalties Given by Referee by Team", fig.align= 'center', fig.height = 7}
+```{r ref_by_team, anchor='Figure', fig.cap="Figure 6: Average Number of Penalties Called by Referee by Team", fig.align= 'center', fig.height = 7}
 #looking at the penalties by team by ref
 #group by team
 penRef<-refData %>%
@@ -356,17 +356,17 @@ penRef<-merge(x=penRef,y=temP)
 fill <- "#4271AE"
 line <- "#1F3552"
 
-ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5,outlier.size = 2)+coord_flip()+ggtitle("Avg Number of Penalties Called by Referee by Team")+xlab('Team')+ylab('Average Number of Penalties Given by Referee')+theme_ref
+ggplot(penRef, aes(x=reorder(PenaltyTeam,Median),y=PenPerGame))+geom_boxplot(fill=fill,colour=line,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,alpha=0.5,outlier.size = 2)+coord_flip()+ggtitle("Avg Number of Penalties Called by Referee by Team")+xlab('Team')+ylab('Average Number of Penalties Called by Referee')+theme_ref
 
 ```
 
-In Figure 6 we observe the distributions of how teams are officiated on average. We can see that Seattle (`SEA`) has the highest median number of penalties called against them on average, while New England (`NE`) has the lowest. Remember that each one of the outliers shown above represents a particular referee crew that calls an abnormal number of penalties against a team. This will become more apparent in Figure 7 below. Note that the variance of the average number of penalties against varies greatly. For example Buffalo (`BUF`) has large variation in the ways in which referees treat them, while it appears that most referees treat Carolina (`CAR`) relatively similarily.
+In Figure 6 we observe the distributions of how teams are officiated on average. We can see that Seattle (`SEA`) has the highest median number of penalties called against them on average, while New England (`NE`) has the lowest. Remember that the outliers (i.e. dots in the above graph) represent particular referee crews that call an abnormal number of penalties against a team. This will become more apparent in Figure 7 below. Note that the variance of the average number of penalties against teams varies greatly. For example, Buffalo (`BUF`) has large variation in the ways in which referees treat them, while it appears that most referees treat Carolina (`CAR`) relatively similarily.
 
-The outliers in Figure 6 are particularly interesting. This is because finding referee crews that act normally is not something notable, but if we are able to identify abnormal patterns in officiating then this may be of significant value. As such, in Figure 7 we narrow down the above boxplot to only those that have outliers.
+The outliers in Figure 6 are particularly interesting. This is because finding referee crews that act normally is not something notable, but if we are able to identify abnormal patterns in officiating then this may be of significant value. As such, in Figure 7 we narrow down the above boxplots to only particular teams that have outlier referee crews.
 
 
 ```{r ref_tendencies, anchor='Figure', fig.cap="Figure 7: Average Number of Penalties Given by Referee by Team: Outliers", fig.align= 'center'}
-#We only want the teams that have ooutliers from above, as we are most interested in these referees.
+#We only want the teams that have outliers from above, as we are most interested in these referees.
 
 BUFPenRef<-penRef[penRef[,1]=='BUF',]
 OAKPenRef<-penRef[penRef[,1]=='OAK',]
@@ -377,6 +377,10 @@ KCPenRef<-penRef[penRef[,1]=='KC',]
 ATLPenRef<-penRef[penRef[,1]=='ATL',]
 ARIPenRef<-penRef[penRef[,1]=='ARI',]
 SEAPenRef<-penRef[penRef[,1]=='SEA',]
+MIAPenRef<-penRef[penRef[,1]=='MIA',]
+PHIPenRef<-penRef[penRef[,1]=='PHI',]
+LARPenRef<-penRef[penRef[,1]=='LAR',]
+NOPenRef<-penRef[penRef[,1]=='NO',]
 
 subsetTeams <- rbind(KCPenRef,OAKPenRef)
 subsetTeams <- rbind(subsetTeams,NYGPenRef)
@@ -385,6 +389,10 @@ subsetTeams <- rbind(subsetTeams,NEPenRef)
 subsetTeams <- rbind(subsetTeams,ARIPenRef)
 subsetTeams <- rbind(subsetTeams,SEAPenRef)
 subsetTeams <- rbind(subsetTeams,ATLPenRef)
+subsetTeams <- rbind(subsetTeams,MIAPenRef)
+subsetTeams <- rbind(subsetTeams,PHIPenRef)
+subsetTeams <- rbind(subsetTeams,LARPenRef)
+subsetTeams <- rbind(subsetTeams,NOPenRef)
 
 fill <- "#4271AE"
 line <- "#1F3552"
@@ -394,19 +402,19 @@ subsetTeams %>%
   mutate(outlier = ifelse(is_outlier(PenPerGame), as.character(Referee),NA)) %>%
   ggplot(., aes(x = factor(PenaltyTeam), y = PenPerGame)) +
     geom_boxplot(fill=fill,colour=line,alpha = 0.5,outlier.colour = "red4", outlier.alpha=1,outlier.shape = 18,outlier.size = 1.5) +
-    geom_text(aes(label = outlier), na.rm = TRUE,hjust = 1.1,size=3)+xlab('Team')+ylab('Average Penalty Per Game by Referee')+ggtitle('Avg Number of Penalties by Referee by Team: Outliers')+theme_ref
+    geom_text(aes(label = outlier), na.rm = TRUE, hjust = 1.1, size=2)+xlab('Team')+ylab('Average Penalties Per Game by Referee')+ggtitle('Avg Number of Penalties by Referee by Team: Outliers')+theme_ref
 
 ```
 
-It is important to recall that this graph of boxplots is the same as in `r figr('ref_by_team', prefix=TRUE)`, only with the axes switched and the data now subsetted to only include those teams with outliers. Each of the outlier referees are labeled. One potential explanation for these deviances could be that particular referee crews are more likely to call specific penalties (for example, pass interference), while some teams are more likely to commit certain penalties. Such cases would indeed create outliers.  Another possible explanation is that there could be a limited number of data points for particular referee/team combinations, but this will be remedied as more data can be added over time.
+It is important to recall that this graph of boxplots is the same as in `r figr('ref_by_team', prefix=TRUE)`, only with the axes switched and the data now subsetted to only include those teams with outliers. All of the outlier referees are labeled. One potential explanation for these deviances could be that particular referee crews are more likely to call specific penalties (for example, pass interference), while some teams are more likely to commit certain penalties. Such cases would indeed create outliers.  Another possible explanation is that there could be a limited number of data points for particular referee/team combinations, but this will be remedied as more data can be added over time.
 
-We see that there are a few referee crews that appear on the graph multiple times. For example, John Hussey's crew shows up three times, appearing to call more penalties on the New York Giants (`NYG`) and Atlanta (`ATL`), while calling less penalties on New England (`NE`). This could mean that the crew is slightly less consistent in their penalty calling than other referee crews.
+We see that there are a few referee crews that appear on the graph multiple times. For example, John Hussey's crew shows up three times, appearing to call more penalties on the New York Giants (`NYG`) and Atlanta (`ATL`), while calling less penalties on New England (`NE`). This could mean that the crew is slightly less consistent in its penalty calling than other referee crews.
 
 ###Section 4F: Analysis by Referee by Team - Home vs Away
 
-We were also interested in extending the analysis of referee calls by team, and thus decided to look at whether certain referees had a large difference in the number of penalties that they called on teams playing on the road versus the number of penalties that they called on teams playing at home. We used a similar methodology as described in the previous section. First we determined the average number of penalties called when teams are away and the average number of penalties called when teams are at home. We then took the difference between means (Average # Away - Average # Home). This gave us a distribution of the differences between home penalties and away penalties for each referee and each team. Because this naturally produces a large number of categorical variables, we decided to then focus only on one referee: Brad Allen. We chose Brad Allen because of the his crew had a large range between the most heavily home-favoured team and the most heavily away-favoured team. You can see the average difference between away and home penalties by team for Brad Allen in figure 8 below.
+We were also interested in extending the analysis of referee calls by team, and thus decided to look at whether certain referees had a large difference in the number of penalties that they called on teams playing on the road versus the number of penalties that they called on teams playing at home. We used a similar methodology as described in the previous section. First we determined the average number of penalties called when teams are away and the average number of penalties called when teams are at home. We then took the difference between means (Average # Away less Average # Home). This gave us a distribution of the differences between home penalties and away penalties for each referee crew and each team. Because this naturally produces a large number of categorical variables, we decided to then focus only on one referee crew: Brad Allen. We chose Brad Allen's crew because his crew had a large range between the most heavily home-favored team and the most heavily away-favored team. You can see the average difference between away and home penalties by team for Brad Allen's referee crew in Figure 8 below.
 
-```{r ref_home_away_team, anchor='Figure', fig.cap="Figure 8: Brad Allen Average Penalties Away - Average Penalties Home", fig.align= 'center', fig.height= 7, fig.width= 6}
+```{r ref_home_away_team, anchor='Figure', fig.cap="Figure 8: Brad Allen Difference Between Away and Home Penalties by Team", fig.align= 'center', fig.height= 7, fig.width= 6}
 refData$AgainstAway = refData$PenaltyTeam == refData$Away
 
 penRefTemp<-refData %>%
@@ -469,16 +477,16 @@ Brad<-'Brad Allen'
 BradData<-NoGamesRefHome[NoGamesRefHome[,2]==Brad,]
 BradData$Outlier<-(BradData$Team == 'TEN' | BradData$Team == 'DET' | BradData$Team == 'LAC')
 
-ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference))+geom_point(size=2.5)+coord_flip()+ggtitle('Brad Allen: Difference Between Away and Home by Team')+ylab('Average Penalties Away - Average Penalties Home')+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)+theme(axis.title.x = element_text(size = 16),axis.title.y = element_text(size = 16), plot.title = element_text(hjust = 0.5, size = 15), panel.background = element_rect(fill = "white", colour = "white", size = 0.5, linetype = "solid"),  panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray90"), panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "gray90"))
+ggplot(BradData,aes(x=reorder(Team,Difference),y=Difference))+geom_point(size=2.5)+coord_flip()+ggtitle('Brad Allen Difference Between Away and Home by Team')+ylab('Average Penalties Away - Average Penalties Home')+xlab('Team')+geom_hline(yintercept = mean(BradData$Difference),color = 'red', alpha = 0.3)+theme(axis.title.x = element_text(size = 16),axis.title.y = element_text(size = 16), plot.title = element_text(hjust = 0.5, size = 15), panel.background = element_rect(fill = "white", colour = "white", size = 0.5, linetype = "solid"),  panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray90"), panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "gray90"))
 
 
 ```
 
-When analyzing Figure 8, remember that we are now looking at the difference between home and away penalties for one individual referee: Brad Allen. We can see that the range of difference can be quite large. The expected value of the distribution above is 0, but some teams in particular (`TEN`,`OAK`,`DET`,`LAC`) have large deviations from 0. We can see that on average, Brad Allen's crew calls more penalties on away teams than home teams, but there are several outliers where they call many more penalties against the home team than the away team. This type of analysis is useful to dig into more detail about the habits of each referee crew, and further analysis for whether being the away team is a disadvantage in terms of penalties. With future analysis, we hope to learn more about how each individual crew treats the away team when compared to the home team.
+When analyzing Figure 8, remember that we are now looking at the difference between home and away penalties for only Brad Allen's referee crew. We can see that the range of difference can be quite large. The expected value of the distribution above is just above zero, but some teams in particular (`TEN`,`OAK`,`DET`,`LAC`) have large deviations from zero. We can see that on average, Brad Allen's crew calls more penalties on away teams than home teams, but there are several outliers where they call many more penalties against the home team than the away team. This type of analysis is useful to dig into more detail about the habits of each referee crew, and serves as further analysis for whether being the away team is a disadvantage when it comes to penalties. With future analysis, we hope to learn more about how each individual crew treats the away team when compared to the home team.
 
 ###Section 4G: Analysis by Yard Line
 
-Next we examine the distribution of penalties that are called by location on the field. Figure 9 below shows this distribution, where a value of 0 means the penalty was called as close as possible to the offensive team's own endzone, and a value of 100 means the penalty was at the goal line of the attacking endzone.
+Next we examine the distribution of penalties that are called by location on the field. Figure 9 below shows this distribution, where a value of zero means the penalty was called as close as possible to the offensive team's own endzone, and a value of 100 means the penalty was called at the goal line of the attacking endzone.
 ```{r yardlines_1, anchor='Figure', fig.cap="Figure 9: Penalties by Yard Line", fig.width= 8, fig.align= 'center'}
 df <- refData
 
@@ -491,7 +499,7 @@ ggplot(df, aes(x=YardLine)) +
   geom_histogram(aes(y = ..density..),
                  binwidth = 5,
                  color = "blue", fill = "lightgreen") +
-  geom_density(aes(color = "Density Curve - Yardline Data"), lwd=1.0) +
+  geom_density(aes(color = "Density Curve - Yard Line Data"), lwd=1.0) +
   stat_function(fun = dnorm, args = list(mean = m, sd = std_dev),
                 aes(color = "Density Curve - Normal Distribution"), lwd = 1.0) + theme_ref +
   ggtitle("Penalties by Yard Line") +
@@ -500,7 +508,7 @@ ggplot(df, aes(x=YardLine)) +
   labs(color = "Color")
 ```
 
-The black line in Figure 9 above represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own endzone than they do closer to the defensive team's endzone. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather in the offensive half of the field (yard lines 50-100)? Figure 10 below yields insight into this question.
+The black line in Figure 9 above represents the density curve of the data, while the red line is an overlaid normal distribution curve. It is interesting to note that penalty data is skewed right. This means that penalties more frequently occur closer to the offensive team's own endzone than they do closer to the defensive team's endzone. This supports the argument that legitimate penalties may go uncalled when an offensive team gets closer to scoring. To examine this more closely, we can create a Cleveland Dot Plot to see if all referees follow a similar pattern: that is, do all referees tend to call more penalties in the defensive half of the field (yard lines 0-50) rather than in the offensive half of the field (yard lines 50-100)? Figure 10 below yields insight into this question.
 
 ```{r ref_yardlines, anchor='Figure', fig.width = 7, fig.cap="Figure 10: Penalty Yard Line Averages by Referee", fig.align= 'center'}
 library(tidyverse)
@@ -517,10 +525,10 @@ ggplot(df_subset, aes(x=mean_yard_line,
   scale_y_discrete(name = 'Referee') +
   scale_x_continuous(name = "Mean Yard Line") +
   theme_ref +
-  geom_vline(aes(xintercept = mean(mean_yard_line), color = "Average Yardline of \nPenalty Calls Accross \nAll Referees")) +  labs(color = "Vertical Line") + scale_color_manual(values=c("black"))
+  geom_vline(aes(xintercept = mean(mean_yard_line), color = "Average Yard Line of \nPenalty Calls Across \nAll Referees")) +  labs(color = "Vertical Line") + scale_color_manual(values=c("black"))
 ```
 
-Figure 10 shows the distribution of average yard lines at which penalties are called by each referee. The graph shows that the average yard line of penalties for all referees is between 46 and 49. This finding is consistent with the results from the histogram of `r figr('yardlines_1', prefix=TRUE)`, where we see that penalties are more frequently called at yard lines closer to the offensive team's endzone than to the defensive team's endzone.
+Figure 10 shows the distribution of average yard lines at which penalties are called by each referee crew. The graph shows that the average yard line of penalties for all referees is between 46 and 49. This finding is consistent with the results from the histogram of `r figr('yardlines_1', prefix=TRUE)`, where we see that penalties are more frequently called at yard lines closer to the offensive team's endzone than to the defensive team's endzone.
 
 Although all referees show the same general pattern in the average area where they call penalties (that being between yard lines 46 and 49), there are three outliers, relatively speaking. In general, the referee crews of Bill Vinovich and Craig Wrolstad call penalties at greater yard lines than does the average crew, while Gene Steratore's referee crew calls penalties at lower yard lines than most.
 
@@ -541,13 +549,13 @@ htmltools::includeHTML("./docs/index_report.html")
 
 The frequency, consistency, and possible biases of penalty calls in the NFL are areas of football analytics that have only garnered minimal attention individually, let alone all together. By combining various publicly-available data sources, we created a comprehensive dataset that includes NFL play-by-play game data joined with detailed referee assignments and granular penalty data.
 
-Once we combined the various data sources into a single dataset, we began exploring the data from multiple angles. An examination of the distribution of penalties by quarter produced `r figr('penalties_by_q', prefix = TRUE)`. In this figure, we see slight spikes in the frequency of penalty calls in the second quarter and fourth quarter of games. A high frequency of penalties in the fourth quarters of games intuitively makes sense because the game is nearing conclusion and teams take more risks in an attempt to either keep or overtake the lead. However, it is a surprising result that quarter two yields the highest frequency of penalty calls. During quarter two, an entire quarter has already been completed, which would intuitively suggest that the flow of the game is relatively steady, and that both teams and referees have settled into their respective elements. Additionally, overtime (whose duration on average is somewhere between half and three-quarters of that of a normal quarter) yields a penalty frequency that is seemingly proportional to a normal quarter, given the duration of overtime play.
+Once we combined the various data sources into a single dataset, we began exploring the data from multiple angles. An examination of the distribution of penalties by quarter produced `r figr('penalties_by_q', prefix = TRUE)`. In this figure, we see slight spikes in the frequency of penalty calls in the second quarter and fourth quarter of games. A high frequency of penalties in the fourth quarter of games intuitively makes sense because the game is nearing conclusion and teams take more risks in an attempt to either keep or overtake the lead. However, it is a surprising result that quarter two yields the highest frequency of penalty calls. During quarter two, an entire quarter has already been completed, which would intuitively suggest that the flow of the game is relatively steady, and that both teams and referees have settled into their respective elements. Additionally, overtime (whose duration on average is somewhere between half and three-quarters of that of a normal quarter) yields a penalty frequency that is seemingly proportional to a normal quarter, given the duration of overtime play.
 
 After some other high-level exploration of penalty distributions, we began comparing penalties called by referee. One of the most important findings of our analysis is conveyed in `r figr('ref_home_away_1', prefix=TRUE)`. This graph shows the percentage of penalties that each referee crew calls against the home team (i.e. the team playing at its home stadium) versus that of the away team (i.e. the team playing on the road). We observe that all referee crews, except for that of John Hussey, call more penalties against the away team than they do against the home team. Although it cannot be stated with certainty whether referee crews are biased in favor of home teams or whether teams legitimately commit penalties at lower rates when they are playing at home, this is certainly a notable insight that prompts discussion and further analysis.
 
-To further explore referee crew tendencies, we examined the number of penalties called per game by each referee crew against each team. In `r figr('ref_tendencies', prefix=TRUE)` we display notable findings from this exploration. This visualization of box plots only includes teams that have one or more outliers in their distributions. It is interesting to see which referee crews are determined as outliers in the graph, and it is particularly noteworthy when referee crews are deemed outliers in the left tail of the distribution for some team(s), while deemed outliers in the right tail of the distribution for other team(s). For example, on average we see that John Hussey's referee crew calls significantly fewer penalties per game against the New England patriots (`NE`), while the crew calls significantly more penalties per game against the Atlanta Falcons (`ATL`) and the New York Giants (`NYG`).
+To further explore referee crew tendencies, we examined the number of penalties called per game by each referee crew against each team. In `r figr('ref_tendencies', prefix=TRUE)` we display notable findings from this exploration. This visualization of boxplots only includes teams that have one or more outliers in their distributions. It is interesting to see which referee crews are determined as outliers in the graph, and it is particularly noteworthy when referee crews are deemed outliers in the left tail of the distribution for some team(s), while deemed outliers in the right tail of the distribution for other team(s). For example, on average we see that John Hussey's referee crew calls significantly fewer penalties per game against the New England patriots (`NE`), while the crew calls significantly more penalties per game against the Atlanta Falcons (`ATL`) and the New York Giants (`NYG`).
 
-Although many technological advances are constantly being made in just about all sports (such as the inclusion of instant replay), referees are an inherently human part of football. Thus, at the core of the exploratory data analysis conducted in this project lies human behavior. No two humans see things the exact same way, which serves as some justification for the inconsistencies we see in referee penalty calls, despite much effort taken by the NFL to define the constitution of particular penalties in objective terms. Therefore, we must err on the side of caution when identifying anomalies or inconsistencies in our dataset. For example, while there is no denying from `r figr('variances', prefix=TRUE)` that Bill Vinovich's referee crew calls more penalties per game for all penalty types than does the average referee crew, this does not necessarily imply that Bill Vinovich's crew is biased. In fact, we should be more concerned with inconsistencies within a particular referee crew's penalty calls than we should be concerned with inconsistencies between distinct referee crews.
+Although many technological advances are constantly being made in just about all sports (such as the introduction of instant replay), referees are an inherently human part of football. Thus, at the core of the exploratory data analysis conducted in this project lies human behavior. No two humans see things the exact same way, which serves as some justification for the inconsistencies we see in referee penalty calls, despite much effort taken by the NFL to define the constitution of particular penalties in objective terms. Therefore, we must err on the side of caution when identifying anomalies or inconsistencies in our dataset. For example, while there is no denying from `r figr('variances', prefix=TRUE)` that Bill Vinovich's referee crew calls more penalties per game for all penalty types than does the average referee crew, this does not necessarily imply that Bill Vinovich's crew is biased. In fact, we should be more concerned with inconsistencies within a particular referee crew's penalty calls than we should be concerned with inconsistencies between distinct referee crews.
 
 We encourage readers of this report, as well as anyone interested in football analytics or penalties in the NFL, to explore our interactive graph as shown in <a href="#section-5-interactive-component---offensivedefensive-penalties-by-area-of-field">Section 5</a> of this report. This interactive component allows users to get a feel for the types of penalties, and the frequencies at which such penalties occur, at various locations on the football field. This tool offers an engaging way for users to learn about penalty distributions in the NFL, while requiring minimal analytical prowess. We hope this tool, coupled with the analyses and visualizations included in this report, offer insight into NFL penalties for individuals of all backgrounds.
 
@@ -556,12 +564,12 @@ We encourage readers of this report, as well as anyone interested in football an
 
 While many unique insights were uncovered through this analysis, there remain a few interesting directions in which we can proceed to perform further exploratory data analysis.
 
-As noted in detail within this report, home teams are penalized significantly less often than are away teams. This is a trend we found consistent across all teams, just about all referees, and across all quarters of games. In each NFL season, there are a few games (generally less than three or four) that are played at neutral fields, either in another country or at a pre-determined destination in the United States (as is the case for the annual Super Bowl championship game). It would be quite interesting to expand our home versus away penalty analysis to games played at neutral locations. However, a limitation with this potential exploration would be that we have a significantly smaller sample size than what was used in this analysis. Moreover, we would need to be careful to filter out games that are technically at a neutral location but where one team still has a locational advantage (for example when the Oakland Raiders played a "Home Game" against the Houston Texans at the Estadio Azteca in Mexico City which is significantly closer to Houston). In carrying out such an analysis, we suspect that this would yield a much more balanced distribution of penalties called against opposing teams when neither team is playing at its home stadium.
+As noted in detail within this report, home teams are penalized significantly less often than are away teams. This is a trend we found consistent across all teams, just about all referees, and across all quarters of games. In each NFL season, there are a few games (generally less than three or four) that are played at neutral fields, either in another country or at a pre-determined destination in the United States (as is the case for the annual Super Bowl championship game). It would be quite interesting to expand our home versus away penalty analysis to games played at neutral locations. However, a limitation with this potential exploration would be that we have a significantly smaller sample size than what was used in this analysis. Moreover, we would need to be careful to filter out games that are technically at a neutral location but where one team still holds a locational advantage (for example when the Oakland Raiders played a "Home Game" against the Houston Texans at the Estadio Azteca in Mexico City which is significantly closer to Houston). In carrying out such an analysis, we suspect that this would yield a much more balanced distribution of penalties called against opposing teams when neither team is playing at its home stadium.
 
-One challenge that we faced in this project was vizualizing data for so many categorical variables. This was a particularly notable challenge in the 'Analysis by Referee by Team' section of this report. Having 32 teams and 16 referee crews means that visualizing anything beyond a boxplot becomes very difficult (although one thing that we learned through completing our project is just how useful a boxplot can be). One future path that we would like to take would be to create additional dynamic visualizations for our data. Allowing users to slice the data on different variables would allow us to show more, without overloading the report with graphs Alternatively, instead of looking at all teams and referees, in the future we could narrow our analysis to look at specific teams or specific referee crews. This would allow us to focus our analysis on areas in which we are particularily interested.
+One challenge that we faced in this project was vizualizing data for so many categorical variables. This was a particularly notable challenge in <a href="#section-4e-analysis-by-referee-by-team">Section 4E</a>, where we analyzed penalty calls by referee crew by team. Having 32 teams and 16 referee crews means that visualizing anything beyond a boxplot becomes very difficult (although one thing that we learned through completing our project is just how useful a boxplot can be). One future path that we would like to take would be to create additional dynamic visualizations for our data. Allowing users to slice the data on different variables would allow us to show more, without overloading the report with graphs. Alternatively, instead of looking at all teams and all referee crews, in future work we could narrow our analysis to look at specific teams or specific referee crews. This would allow us to focus our analysis on areas in which we are particularly interested.
 
 This project also taught us how long preprocessing data can take, particularly when merging multiple data sources together. Merging all of our data together took considerable effort, not to mention the data cleaning that needed to be done on each of the datasets after merging. One trick that we used in merging the data was to create unique variables that served as unique identifiers, on which we joined the datasets. The creation of a 'merge-id' may lead to slightly more work in going through the data and figuring out which fields one needs to keep or to delete, but it saves an incredible amount of time in the actual merge. With this knowledge in hand, we feel much more prepared to complete similar preprocessing tasks in the future. 
 
-A final challenge that we came across is the lack of long term data. As mentioned above, having more years of data would allow us to complete a more in depth analysis, particularly on the NFL playoffs and the Super Bowl, which were games we did not include in our dataset for this report.
+A final challenge that we came across is the lack of long-term data. As mentioned above, having more years of data would allow us to complete a more in depth analysis, particularly on the NFL playoffs and the Super Bowl, which were games we did not include in our dataset for this report.
 
-A final future deliverable that we would like to conduct is an analysis of the number of penalties called at different times in NFL games based on current score. Essentially, we hope to be able to answer whether or not more penalties are called when the score of a game is close. Unfortunately our dataset did not contain the score at each point in the games, so we would have to look elsewhere for granular data in order to complete such an analysis.
+A final future deliverable that we would like to conduct is an analysis of the number of penalties called at different times in NFL games based on current score. Essentially, we hope to be able to answer whether or not more penalties are called when the scores of two teams playing in a game are close. Unfortunately our dataset did not contain scores at various points in the games, so we would have to look elsewhere for granular data in order to complete such an analysis.
