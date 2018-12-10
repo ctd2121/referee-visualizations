@@ -11,7 +11,7 @@ As noted in the Introduction, because there are hundreds of referees, linesmen, 
 
 A CSV file is available in the "/data" subfolder for each of the 17 referees we included in the analysis. Also included in this subfolder is a file called "abbreviations.csv" which was used when joining the play-by-play data to the referee data, and includes a mapping of team names to team abbreviations. For example, this file maps team name "Arizona Cardinals" to team abbreviation "ARI".
 
-In additon to the data there is a file entitled preprocessing.R which iterates through the CSV Files and merges them into a single data set. Moreover, since many of the penalty types in our dataset are quite similar in nature (e.g. `Offensive Offside` and `Defensive Offside`), so we grouped such instances using universal grouping terms, as shown in the below table. Moreover, certain penalty type groupings accounted for less than 1% of all observations even after the groupings were applied, and such groups were then grouped again into the `Other` category. The table below highlights all groupings we used for our analysis.
+In additon to the data there is a file entitled preprocessing.R which iterates through the CSV Files and merges them into a single data set. Moreover, since many of the penalty types in our dataset are quite similar in nature (e.g. `Offensive Offside` and `Defensive Offside`), we grouped such instances using universal grouping terms, as shown in the below table. Moreover, certain penalty type groupings accounted for less than 1% of all observations even after the groupings were applied, and such groups were then grouped again into the `Other` category. The table below highlights all groupings we used for our analysis.
 
 <table>
 <colgroup>
